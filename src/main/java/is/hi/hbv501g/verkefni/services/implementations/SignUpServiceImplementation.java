@@ -36,7 +36,7 @@ public class SignUpServiceImplementation implements SignUpService {
 
     @Override
     public boolean isEmailFree(String email) {
-        return !userRepository.isEmailFree(email);
+        return !userRepository.isemailfree(email);
     }
 
     @Override

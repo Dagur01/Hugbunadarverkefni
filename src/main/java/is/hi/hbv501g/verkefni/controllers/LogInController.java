@@ -1,5 +1,4 @@
 package is.hi.hbv501g.verkefni.controllers;
-
 import is.hi.hbv501g.verkefni.controllers.dto.AuthDtos;
 import is.hi.hbv501g.verkefni.persistence.repositories.UserRepository;
 import is.hi.hbv501g.verkefni.services.LogInService;
@@ -26,8 +25,11 @@ public class LogInController {
             return ResponseEntity.status(401).body("Invalid credentials");
         }
 
+
         String user = userRepository.findByEmail(req.email())
-                .map(u -> u.getRole().name())
+                .map(u -> {
+                    return u.getRole().name();
+                })
                 .orElse("USER");
         String token = jwtService.generateToken(req.email(), Map.of("role", user));
         return ResponseEntity.ok(new AuthDtos.AuthResponse(token));
