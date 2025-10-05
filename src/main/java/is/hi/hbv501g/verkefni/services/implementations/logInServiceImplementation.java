@@ -1,8 +1,7 @@
 package is.hi.hbv501g.verkefni.services.implementations;
 
-import is.hi.hbv501g.verkefni.persistence.entities.User;
-import is.hi.hbv501g.verkefni.persistence.repositories.UserRepository;
-import is.hi.hbv501g.verkefni.services.LogInService;
+import is.hi.hbv501g.verkefni.persistence.repositories.userRepository;
+import is.hi.hbv501g.verkefni.services.logInService;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -11,9 +10,9 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class LogInServiceImplementation implements LogInService {
+public class logInServiceImplementation implements logInService {
 
-    UserRepository userRepository;
+    userRepository userRepository;
     PasswordEncoder passwordEncoder;
 
     @Override
@@ -36,7 +35,7 @@ public class LogInServiceImplementation implements LogInService {
     @Override
     public boolean isAdmin(String email) {
         return userRepository.findByEmail(email)
-                .map(user -> user.getRole() == User.Role.ADMIN)
+                .map(user -> user.getRole() == is.hi.hbv501g.verkefni.persistence.entities.user.Role.ADMIN)
                 .orElse(false);
     }
 

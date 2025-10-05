@@ -1,8 +1,8 @@
 package is.hi.hbv501g.verkefni.controllers;
-import is.hi.hbv501g.verkefni.controllers.dto.AuthDtos;
-import is.hi.hbv501g.verkefni.persistence.repositories.UserRepository;
-import is.hi.hbv501g.verkefni.services.LogInService;
-import is.hi.hbv501g.verkefni.security.JwtService;
+import is.hi.hbv501g.verkefni.controllers.dto.authDtos;
+import is.hi.hbv501g.verkefni.persistence.repositories.userRepository;
+import is.hi.hbv501g.verkefni.services.logInService;
+import is.hi.hbv501g.verkefni.security.jwtService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -12,14 +12,14 @@ import java.util.Map;
 @RestController
 @RequestMapping("/auth")
 @RequiredArgsConstructor
-public class LogInController {
+public class logInController {
 
-    private  final LogInService logInService;
-    private final UserRepository userRepository;
-    private final JwtService jwtService;
+    private  final logInService logInService;
+    private final userRepository userRepository;
+    private final jwtService jwtService;
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody AuthDtos.AuthRequest req){
+    public ResponseEntity<?> login(@RequestBody authDtos.AuthRequest req){
         boolean ok = logInService.login(req.email(), req.password());
         if (!ok) {
             return ResponseEntity.status(401).body("Invalid credentials");
@@ -32,7 +32,8 @@ public class LogInController {
                 })
                 .orElse("USER");
         String token = jwtService.generateToken(req.email(), Map.of("role", user));
-        return ResponseEntity.ok(new AuthDtos.AuthResponse(token));
+        return ResponseEntity.ok(new authDtos.AuthResponse(token));
+
     }
 
 

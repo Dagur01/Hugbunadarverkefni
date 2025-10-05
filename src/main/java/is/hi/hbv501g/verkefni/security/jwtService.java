@@ -3,6 +3,7 @@ package is.hi.hbv501g.verkefni.security;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
 
 import javax.crypto.SecretKey;
@@ -11,14 +12,12 @@ import java.util.Date;
 import java.util.Map;
 
 @Service
-public class JwtService {
+public class jwtService {
     private final SecretKey secretKey;
-    private final long jwtExpiration;
 
-    public JwtService(@Value("${jwt.secret}") String secret,
-                      @Value("${jwt.expiration}") long jwtExpiration) {
+    public jwtService(@Value("${jwt.secret}") String secret) {
         this.secretKey = Keys.hmacShaKeyFor(secret.getBytes());
-        this.jwtExpiration = jwtExpiration;
+
     }
 
     public String generateToken(String subject, Map<String, Object> claims) {
@@ -27,7 +26,7 @@ public class JwtService {
                 .setSubject(subject)
                 .addClaims(claims)
                 .setIssuedAt(Date.from(now))
-                .setExpiration(Date.from(now.plusSeconds(jwtExpiration)))
+                .setExpiration(Date.from(now.plusSeconds(3600)))
                 .signWith(secretKey)
                 .compact();
     }

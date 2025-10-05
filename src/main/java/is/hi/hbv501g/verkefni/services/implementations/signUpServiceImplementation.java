@@ -1,29 +1,30 @@
 package is.hi.hbv501g.verkefni.services.implementations;
 
 
-import is.hi.hbv501g.verkefni.persistence.entities.User;
-import is.hi.hbv501g.verkefni.persistence.repositories.UserRepository;
-import is.hi.hbv501g.verkefni.services.SignUpService;
+
+import is.hi.hbv501g.verkefni.persistence.entities.user;
+import is.hi.hbv501g.verkefni.persistence.repositories.userRepository;
+import is.hi.hbv501g.verkefni.services.signUpService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class SignUpServiceImplementation implements SignUpService {
+public class signUpServiceImplementation implements signUpService {
 
-    private final UserRepository userRepository;
-    private final PasswordEncoder passwordEncoder;
+    private final userRepository userRepository;
+    PasswordEncoder passwordEncoder;
 
     @Override
     public boolean signUp(String email, String password){
-        if (!isEmailFree(email) || !isPasswordLegal(password)) {
+        if (!isemailfree(email) || !isPasswordLegal(password)) {
             return false;
         }
-        User user = User.builder()
+        user user = is.hi.hbv501g.verkefni.persistence.entities.user.builder()
                 .email(email)
                 .passwordHash(passwordEncoder.encode(password))
-                .role(User.Role.USER)
+                .role(is.hi.hbv501g.verkefni.persistence.entities.user.Role.USER)
                 .build();
         userRepository.save(user);
         return true;
@@ -35,8 +36,8 @@ public class SignUpServiceImplementation implements SignUpService {
     }
 
     @Override
-    public boolean isEmailFree(String email) {
-        return !userRepository.isemailfree(email);
+    public boolean isemailfree(String email) {
+        return !userRepository.existsByEmail(email);
     }
 
     @Override

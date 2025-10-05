@@ -11,7 +11,7 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Movie {
+public class movie {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
