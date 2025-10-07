@@ -14,7 +14,9 @@ import org.springframework.stereotype.Service;
 public class signUpServiceImplementation implements signUpService {
 
     private final userRepository userRepository;
-    PasswordEncoder passwordEncoder;
+    private final PasswordEncoder passwordEncoder;
+
+
 
     @Override
     public boolean signUp(String email, String password){
