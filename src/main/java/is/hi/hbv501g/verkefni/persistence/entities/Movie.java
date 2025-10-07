@@ -3,7 +3,6 @@ package is.hi.hbv501g.verkefni.persistence.entities;
 
 import jakarta.persistence.*;
 import lombok.*;
-import org.springframework.boot.context.properties.bind.DefaultValue;
 
 @Entity
 @Table(name = "movies")
@@ -12,7 +11,7 @@ import org.springframework.boot.context.properties.bind.DefaultValue;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class movie {
+public class Movie {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

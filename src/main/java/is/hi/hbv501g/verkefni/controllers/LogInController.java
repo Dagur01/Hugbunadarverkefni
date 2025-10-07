@@ -1,25 +1,32 @@
 package is.hi.hbv501g.verkefni.controllers;
+
 import is.hi.hbv501g.verkefni.controllers.dto.authDtos;
-import is.hi.hbv501g.verkefni.persistence.repositories.userRepository;
-import is.hi.hbv501g.verkefni.services.logInService;
+import is.hi.hbv501g.verkefni.persistence.repositories.UserRepository;
 import is.hi.hbv501g.verkefni.security.jwtService;
+import is.hi.hbv501g.verkefni.services.LogInService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Map;
 
 @RestController
 @RequestMapping("/auth")
 @RequiredArgsConstructor
-public class logInController {
+public class LogInController {
 
-    private  final logInService logInService;
-    private final userRepository userRepository;
+    private final LogInService logInService;
+    private final UserRepository userRepository;
     private final jwtService jwtService;
 
+    public LogInController() {
+    }
+
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody authDtos.AuthRequest req){
+    public ResponseEntity<?> login(@RequestBody authDtos.AuthRequest req) {
         boolean ok = logInService.login(req.email(), req.password());
         if (!ok) {
             return ResponseEntity.status(401).body("Invalid credentials");
@@ -35,7 +42,6 @@ public class logInController {
         return ResponseEntity.ok(new authDtos.AuthResponse(token));
 
     }
-
 
 
 }
