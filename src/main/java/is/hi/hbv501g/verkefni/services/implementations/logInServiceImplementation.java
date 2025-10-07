@@ -12,8 +12,8 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class logInServiceImplementation implements logInService {
 
-    userRepository userRepository;
-    PasswordEncoder passwordEncoder;
+    private final userRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     public boolean login(String email, String password) {
