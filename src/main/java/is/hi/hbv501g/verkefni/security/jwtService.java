@@ -1,5 +1,6 @@
 package is.hi.hbv501g.verkefni.security;
 
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
@@ -29,5 +30,22 @@ public class jwtService {
                 .setExpiration(Date.from(now.plusSeconds(3600)))
                 .signWith(secretKey)
                 .compact();
+    }
+
+    public boolean validateToken(String token) {
+        try {
+            String compact = token.startsWith("Bearer ") ? token.substring(7) : token;
+            Jwts.parserBuilder().setSigningKey(secretKey).build().parseClaimsJws(compact);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    public String extractRole(String token) {
+        String compact = token.startsWith("Bearer ") ? token.substring(7) : token;
+        Claims claims = Jwts.parserBuilder().setSigningKey(secretKey).build().parseClaimsJws(compact).getBody();
+        Object role = claims.get("role");
+        return role != null ? role.toString() : null;
     }
 }

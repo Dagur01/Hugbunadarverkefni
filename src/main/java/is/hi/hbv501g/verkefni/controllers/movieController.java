@@ -4,6 +4,7 @@ package is.hi.hbv501g.verkefni.controllers;
 import is.hi.hbv501g.verkefni.controllers.dto.movieCreate;
 import is.hi.hbv501g.verkefni.controllers.dto.mMovieUpdate;
 import is.hi.hbv501g.verkefni.persistence.entities.movie;
+import is.hi.hbv501g.verkefni.security.jwtService;
 import is.hi.hbv501g.verkefni.services.movieService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +18,7 @@ import java.util.Map;
 public class movieController {
 
     private final movieService movieService;
+    private final jwtService jwtService;
 
     @GetMapping(path = "/", produces = "application/json")
     public ResponseEntity<?> listNowPlaying() {
@@ -43,19 +45,74 @@ public class movieController {
         return movieService.filterMovies(movieTitle, genre, ageRating, duration);
     }
 
-    //admin
+    // admin - create
     @PostMapping(path = "/movies", consumes = "application/json", produces = "application/json")
-    public movie create(@RequestBody movieCreate.MovieCreateRequest req) {
-        return movieService.create(req.title(), req.genre(), req.ageRating(), req.duration());
+    public ResponseEntity<?> create(@RequestHeader("Authorization") String authHeader,
+                                    @RequestBody movieCreate.MovieCreateRequest req) {
+        if (authHeader == null || authHeader.isBlank()) {
+            return ResponseEntity.status(401).body("Missing Authorization header");
+        }
+        if (!jwtService.validateToken(authHeader)) {
+            return ResponseEntity.status(401).body("Invalid token");
+        }
+        String role = jwtService.extractRole(authHeader);
+        if (!"ADMIN".equals(role)) {
+            return ResponseEntity.status(403).body("Forbidden: insufficient role");
+        }
+
+        try {
+            movie created = movieService.create(req.title(), req.genre(), req.ageRating(), req.duration());
+            return ResponseEntity.ok(created);
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body(
+                    Map.of("error", e.getClass().getSimpleName(),
+                            "message", e.getMessage())
+            );
+        }
     }
 
+    // admin - update
     @PatchMapping(path = "/movies/{movieId}", consumes = "application/json", produces = "application/json")
-    public movie update(@PathVariable Long movieId, @RequestBody mMovieUpdate.MovieUpdateRequest req){
-        return movieService.update(movieId, req.title(), req.genre(), req.ageRating(), req.duration(), req.nowShowing());
+    public ResponseEntity<?> update(@RequestHeader("Authorization") String authHeader,
+                                    @PathVariable Long movieId,
+                                    @RequestBody mMovieUpdate.MovieUpdateRequest req) {
+        if (authHeader == null || authHeader.isBlank()) {
+            return ResponseEntity.status(401).body("Missing Authorization header");
+        }
+        if (!jwtService.validateToken(authHeader)) {
+            return ResponseEntity.status(401).body("Invalid token");
+        }
+        String role = jwtService.extractRole(authHeader);
+        if (!"ADMIN".equals(role)) {
+            return ResponseEntity.status(403).body("Forbidden: insufficient role");
+        }
+
+        try {
+            movie updated = movieService.update(movieId, req.title(), req.genre(), req.ageRating(), req.duration(), req.nowShowing());
+            return ResponseEntity.ok(updated);
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body(
+                    Map.of("error", e.getClass().getSimpleName(),
+                            "message", e.getMessage())
+            );
+        }
     }
 
+    // admin - delete
     @DeleteMapping(path = "/movies/{movieId}")
-    public ResponseEntity<Void> delete(@PathVariable Long movieId) {
+    public ResponseEntity<Void> delete(@RequestHeader("Authorization") String authHeader,
+                                       @PathVariable Long movieId) {
+        if (authHeader == null || authHeader.isBlank()) {
+            return ResponseEntity.status(401).build();
+        }
+        if (!jwtService.validateToken(authHeader)) {
+            return ResponseEntity.status(401).build();
+        }
+        String role = jwtService.extractRole(authHeader);
+        if (!"ADMIN".equals(role)) {
+            return ResponseEntity.status(403).build();
+        }
+
         movieService.delete(movieId);
         return ResponseEntity.noContent().build();
     }
