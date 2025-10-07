@@ -25,15 +25,30 @@ public class logInController {
             return ResponseEntity.status(401).body("Invalid credentials");
         }
 
-
         String user = userRepository.findByEmail(req.email())
-                .map(u -> {
-                    return u.getRole().name();
-                })
+                .map(u -> u.getRole().name())
                 .orElse("USER");
         String token = jwtService.generateToken(req.email(), Map.of("role", user));
         return ResponseEntity.ok(new authDtos.AuthResponse(token));
+    }
 
+    // Example protected endpoint that verifies role
+    @GetMapping("/admin-only")
+    public ResponseEntity<?> adminOnly(@RequestHeader("Authorization") String authHeader) {
+        if (authHeader == null || authHeader.isBlank()) {
+            return ResponseEntity.status(401).body("Missing Authorization header");
+        }
+
+        if (!jwtService.validateToken(authHeader)) {
+            return ResponseEntity.status(401).body("Invalid token");
+        }
+
+        String role = jwtService.extractRole(authHeader);
+        if (!"ADMIN".equals(role)) {
+            return ResponseEntity.status(403).body("Forbidden: insufficient role");
+        }
+
+        return ResponseEntity.ok("Admin content");
     }
 
 
