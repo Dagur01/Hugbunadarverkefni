@@ -7,7 +7,7 @@ import java.util.List;
 public interface movieService {
 
     movie create(String movieTitle, String genre, Integer ageRating, Long duration);
-    movie update(Long movieId, String movieTitle, String genre);
+    movie update(Long movieId, String movieTitle, String genre, Integer ageRating, Long duration, Boolean nowShowing);
     void delete(Long movieId);
 
     List<movie> listNowPlaying();

@@ -49,9 +49,9 @@ public class movieController {
         return movieService.create(req.title(), req.genre(), req.ageRating(), req.duration());
     }
 
-    @PutMapping(path = "/movies/{movieId}", consumes = "application/json", produces = "application/json")
+    @PatchMapping(path = "/movies/{movieId}", consumes = "application/json", produces = "application/json")
     public movie update(@PathVariable Long movieId, @RequestBody mMovieUpdate.MovieUpdateRequest req){
-        return movieService.update(movieId, req.title(), req.genre());
+        return movieService.update(movieId, req.title(), req.genre(), req.ageRating(), req.duration(), req.nowShowing());
     }
 
     @DeleteMapping(path = "/movies/{movieId}")

@@ -5,6 +5,7 @@ public class movieCreate {
             String title,
             String genre,
             Integer ageRating,
-            Long duration
+            Long duration,
+            Boolean nowShowing
     ) {}
 }

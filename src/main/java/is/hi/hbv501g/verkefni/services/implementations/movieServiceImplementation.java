@@ -29,11 +29,14 @@ public class movieServiceImplementation implements movieService {
     }
 
     @Override
-    public movie update(Long movieId, String movieTitle, String genre){
+    public movie update(Long movieId, String movieTitle, String genre, Integer ageRating, Long duration, Boolean nowShowing){
         movie movie = movieRepository.findById(movieId)
                 .orElseThrow(() ->  new IllegalArgumentException("Movie not found"));
         movie.setTitle(movieTitle);
         movie.setGenre(genre);
+        movie.setAgeRating(ageRating);
+        movie.setDuration(duration);
+        movie.setNowShowing(nowShowing);
         return movieRepository.save(movie);
     }
 
