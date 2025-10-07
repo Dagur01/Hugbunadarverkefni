@@ -3,6 +3,7 @@ package is.hi.hbv501g.verkefni.persistence.entities;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.boot.context.properties.bind.DefaultValue;
 
 @Entity
 @Table(name = "movies")
