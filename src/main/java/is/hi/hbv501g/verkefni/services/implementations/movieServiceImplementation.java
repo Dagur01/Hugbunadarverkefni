@@ -70,4 +70,9 @@ public class movieServiceImplementation implements movieService {
                 .filter(m -> duration == null || m.getDuration().equals(duration))
                 .toList();
     }
+
+    @Override
+    public List<movie> getMoviesByGenre(String genre) {
+        return movieRepository.findByGenre(genre);
+    }
 }
