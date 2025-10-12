@@ -14,4 +14,6 @@ public interface movieService {
     List<movie> listMovies();
     movie getMovieById(Long movieId);
     List<movie> filterMovies(String movieTitle, String genre, Integer ageRating, Long duration);
+
+    List<movie> getMoviesByGenre(String genre);
 }

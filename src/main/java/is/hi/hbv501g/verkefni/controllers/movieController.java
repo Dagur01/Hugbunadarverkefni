@@ -45,6 +45,26 @@ public class movieController {
         return movieService.filterMovies(movieTitle, genre, ageRating, duration);
     }
 
+    @GetMapping(path = "/movies/{movieId}", produces = "application/json")
+    public ResponseEntity<?> getMovieById(@PathVariable Long movieId) {
+        try {
+            var movie = movieService.getMovieById(movieId);
+            return movie != null
+                    ? ResponseEntity.ok(movie)
+                    : ResponseEntity.notFound().build();
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body(
+                    Map.of("error", e.getClass().getSimpleName(),
+                            "message", e.getMessage())
+            );
+        }
+    }
+
+    @GetMapping(path = "/movies/genre/{genre}", produces = "application/json")
+    public List<movie> getMoviesByGenre(@PathVariable String genre) {
+        return movieService.getMoviesByGenre(genre);
+    }
+
     // admin - create
     @PostMapping(path = "/movies", consumes = "application/json", produces = "application/json")
     public ResponseEntity<?> create(@RequestHeader("Authorization") String authHeader,
@@ -97,6 +117,8 @@ public class movieController {
             );
         }
     }
+
+    // myndir verða að vera í database, ekki cloudinary
 
     // admin - delete
     @DeleteMapping(path = "/movies/{movieId}")
