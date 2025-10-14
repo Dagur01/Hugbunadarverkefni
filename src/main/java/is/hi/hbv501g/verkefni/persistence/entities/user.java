@@ -30,7 +30,6 @@ public class user {
     private Role role;
 
     @Column(name = "profile_picture", columnDefinition = "bytea")
-    @JdbcTypeCode(SqlTypes.VARBINARY)   // Hibernate 6+ (optional but nice)
     private byte[] profilePicture;
 
     @Column(name = "profile_picture_content_type")

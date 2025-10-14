@@ -26,6 +26,7 @@ public class logInController {
     private final userRepository userRepository;
     private final jwtService jwtService;
 
+    // User login
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody authDtos.AuthRequest req){
         boolean ok = logInService.login(req.email(), req.password());
@@ -40,6 +41,7 @@ public class logInController {
         return ResponseEntity.ok(new authDtos.AuthResponse(token));
     }
 
+    // Get logged in user's profile
     @GetMapping(path = "/profile", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> getProfile(@RequestHeader("Authorization") String authHeader) {
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
@@ -66,12 +68,13 @@ public class logInController {
                 .orElseGet(() -> ResponseEntity.status(404).body(null));
     }
 
+
+    // Update logged in user's profile username
     @PatchMapping(path = "/profile", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> updateProfile(
             @RequestHeader("Authorization") String authHeader,
             @RequestBody profileDtos.ProfileUpdateRequest req
     ) {
-        // --- auth ---
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             return ResponseEntity.status(401).body("Missing or invalid Authorization header");
         }
@@ -80,11 +83,11 @@ public class logInController {
             return ResponseEntity.status(401).body("Invalid token");
         }
         String email = jwtService.extractUsername(token);
-        // --- find user ---
+
         var user = userRepository.findByEmail(email)
                 .orElse(null);
         if (user == null) return ResponseEntity.status(404).body("User not found");
-        // --- update fields ---
+
         if (req.username() != null && !req.username().isBlank()) {
             user.setUsername(req.username());
             userRepository.save(user);
@@ -92,12 +95,14 @@ public class logInController {
         return ResponseEntity.ok("Username updated");
     }
 
+
+    // Upload or update profile picture
     @PatchMapping(path = "/profile/picture", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<?> uploadProfilePicture(
             @RequestHeader("Authorization") String authHeader,
             @RequestPart("file") MultipartFile file
     ) {
-        // --- auth ---
+
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             return ResponseEntity.status(401).body("Missing or invalid Authorization header");
         }
@@ -107,21 +112,21 @@ public class logInController {
         }
         String email = jwtService.extractUsername(token);
 
-        // --- find user ---
+
         var user = userRepository.findByEmail(email)
                 .orElse(null);
         if (user == null) return ResponseEntity.status(404).body("User not found");
 
-        // --- validate file ---
+
         if (file.isEmpty()) return ResponseEntity.badRequest().body("Empty file");
 
-        String ct = file.getContentType(); // e.g. image/jpeg
+        String ct = file.getContentType();
         // allow jpeg & png
         if (ct == null || !(ct.equalsIgnoreCase(MediaType.IMAGE_JPEG_VALUE)
                 || ct.equalsIgnoreCase(MediaType.IMAGE_PNG_VALUE))) {
             return ResponseEntity.status(415).body("Only JPEG or PNG allowed");
         }
-        // optional size limit (e.g. 2 MB)
+
         if (file.getSize() > 2 * 1024 * 1024) {
             return ResponseEntity.badRequest().body("File too large (max 2 MB)");
         }
