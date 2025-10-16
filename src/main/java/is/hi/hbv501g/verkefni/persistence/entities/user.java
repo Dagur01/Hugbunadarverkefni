@@ -2,6 +2,8 @@ package is.hi.hbv501g.verkefni.persistence.entities;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 
 
 @Entity
@@ -27,6 +29,14 @@ public class user {
     @Column(nullable = false)
     private Role role;
 
+    @Column(name = "profile_picture", columnDefinition = "bytea")
+    private byte[] profilePicture;
+
+    @Column(name = "profile_picture_content_type")
+    private String profilePictureContentType;
+
+    @Column
+    private String username;
 
 
     public enum Role {USER, ADMIN}

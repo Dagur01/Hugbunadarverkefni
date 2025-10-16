@@ -48,4 +48,10 @@ public class jwtService {
         Object role = claims.get("role");
         return role != null ? role.toString() : null;
     }
+
+    public String extractUsername(String token) {
+        String compact = token.startsWith("Bearer ") ? token.substring(7) : token;
+        Claims claims = Jwts.parserBuilder().setSigningKey(secretKey).build().parseClaimsJws(compact).getBody();
+        return claims.getSubject();
+    }
 }
