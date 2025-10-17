@@ -36,4 +36,22 @@ PATCH "/moviehalls/:id" - update a movie hall
 
 DELETE "/moviehalls/:id" - delete a movie hall
 
+POST http://localhost:8080/bookings
+{
+  "movieId": 1,
+  "hallId": 1,
+  "seatId": 5
+}
+
+GET http://localhost:8080/bookings
+
+Merkja sæti sem bókað
+PATCH http://localhost:8080/seats/2/status?booked=true
+
+Sækja öll sæti fyrir sal
+GET http://localhost:8080/seats/hall/1
+
+Bæta við sæti
+POST http://localhost:8080/seats/add?hallId=1&rowNumber=2&seatNumber=5
+
 
