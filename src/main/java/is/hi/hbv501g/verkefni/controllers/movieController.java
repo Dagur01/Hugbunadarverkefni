@@ -4,12 +4,17 @@ package is.hi.hbv501g.verkefni.controllers;
 import is.hi.hbv501g.verkefni.controllers.dto.movieCreate;
 import is.hi.hbv501g.verkefni.controllers.dto.mMovieUpdate;
 import is.hi.hbv501g.verkefni.persistence.entities.movie;
+import is.hi.hbv501g.verkefni.persistence.repositories.movieRepository;
 import is.hi.hbv501g.verkefni.security.jwtService;
 import is.hi.hbv501g.verkefni.services.movieService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+import is.hi.hbv501g.verkefni.controllers.dto.movieDtos;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
@@ -19,6 +24,7 @@ public class movieController {
 
     private final movieService movieService;
     private final jwtService jwtService;
+    private final movieRepository movieRepository;
 
     @GetMapping(path = "/", produces = "application/json")
     public ResponseEntity<?> listNowPlaying() {
@@ -138,6 +144,54 @@ public class movieController {
         movieService.delete(movieId);
         return ResponseEntity.noContent().build();
     }
+
+    @PatchMapping(path = "/movies/{movieId}/picture", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<?> uploadMoviePicture(
+            @RequestHeader("Authorization") String authHeader,
+            @PathVariable Long movieId,
+            @RequestPart("file") MultipartFile file
+    ) {
+        //  1. Staðfesta JWT token (valfrjálst, ef þú vilt aðeins leyfa admin að hlaða upp)
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            return ResponseEntity.status(401).body("Missing or invalid Authorization header");
+        }
+        String token = authHeader.substring(7);
+        if (!jwtService.validateToken(token)) {
+            return ResponseEntity.status(401).body("Invalid token");
+        }
+
+        //  2. Finna kvikmyndina
+        var movie = movieRepository.findById(movieId).orElse(null);
+        if (movie == null) {
+            return ResponseEntity.status(404).body("Movie not found");
+        }
+
+        //  3. Staðfesta skrána
+        if (file.isEmpty()) return ResponseEntity.badRequest().body("Empty file");
+
+        String ct = file.getContentType();
+        if (ct == null || !(ct.equalsIgnoreCase(MediaType.IMAGE_JPEG_VALUE)
+                || ct.equalsIgnoreCase(MediaType.IMAGE_PNG_VALUE))) {
+            return ResponseEntity.status(415).body("Only JPEG or PNG allowed");
+        }
+
+        if (file.getSize() > 2 * 1024 * 1024) {
+            return ResponseEntity.badRequest().body("File too large (max 2 MB)");
+        }
+
+        //  4. Vista myndina í gagnagrunninn
+        try {
+            movie.setMoviePicture(file.getBytes());
+            movie.setMoviePictureContentType(ct);
+            movieRepository.save(movie);
+            return ResponseEntity.ok("Movie poster updated successfully");
+        } catch (IOException e) {
+            return ResponseEntity.status(500).body("Failed to read file");
+        }
+    }
+
+
+
 
 
 }
