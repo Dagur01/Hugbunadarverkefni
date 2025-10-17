@@ -4,12 +4,16 @@ package is.hi.hbv501g.verkefni.controllers;
 import is.hi.hbv501g.verkefni.controllers.dto.mMovieHallUpdate;
 import is.hi.hbv501g.verkefni.controllers.dto.movieHallCreate;
 import is.hi.hbv501g.verkefni.persistence.entities.movieHall;
+import is.hi.hbv501g.verkefni.persistence.repositories.movieHallRepository;
 import is.hi.hbv501g.verkefni.security.jwtService;
 import is.hi.hbv501g.verkefni.services.movieHallService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
@@ -117,5 +121,6 @@ public class MovieHallControllers {
         movieHallService.delete(movieHallId);
         return ResponseEntity.noContent().build();
     }
+
 
 }
