@@ -2,8 +2,6 @@ package is.hi.hbv501g.verkefni.persistence.entities;
 
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.JdbcTypeCode;
-import org.hibernate.type.SqlTypes;
 
 
 @Entity
