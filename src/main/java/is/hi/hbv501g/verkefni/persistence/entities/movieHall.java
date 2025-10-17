@@ -3,6 +3,8 @@ package is.hi.hbv501g.verkefni.persistence.entities;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.List;
+
 @Entity
 @Table(name = "movieHalls")
 @Getter
@@ -23,4 +25,8 @@ public class movieHall {
 
     @Column(nullable = false)
     private boolean nowShowing;
+
+    @OneToMany(mappedBy = "movieHall", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<seat> seats;
+
 }

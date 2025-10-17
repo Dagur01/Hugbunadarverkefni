@@ -33,4 +33,10 @@ public class movie {
     @Column(nullable = false)
     private boolean nowShowing;
 
+    @Column(name = "movie_picture", columnDefinition = "bytea")
+    private byte[] moviePicture;
+
+    @Column(name = "movie_picture_content_type")
+    private String moviePictureContentType;
+
 }
