@@ -1,7 +1,10 @@
 package is.hi.hbv501g.verkefni.persistence.entities;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
+
+import java.util.List;
 
 @Entity
 @Table(name = "movieHalls")
@@ -23,4 +26,9 @@ public class movieHall {
 
     @Column(nullable = false)
     private boolean nowShowing;
+
+    @OneToMany(mappedBy = "movieHall", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
+    private List<seat> seats;
+
 }

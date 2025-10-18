@@ -8,5 +8,6 @@ public class profileDtos {
 
     // profilePictureBase64 accepts a Base64 string for updates (or null to keep)
     public record ProfileUpdateRequest(String username, String profilePictureBase64) {}
-    
+
+
 }

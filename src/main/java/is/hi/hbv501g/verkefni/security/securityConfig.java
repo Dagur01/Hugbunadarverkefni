@@ -35,7 +35,7 @@ public class securityConfig {
                 // Define which endpoints are public and which need auth
                 .authorizeHttpRequests(auth -> auth
                         // ✅ Open endpoints
-                        .requestMatchers("/**", "/auth/**", "/movies/**","/movieHalls/**", "profile/**").permitAll()
+                        .requestMatchers("/**", "/auth/**", "/movies/**", "/movieHalls/**").permitAll()
 
                         // Everything else requires authentication
                         .anyRequest().authenticated()
