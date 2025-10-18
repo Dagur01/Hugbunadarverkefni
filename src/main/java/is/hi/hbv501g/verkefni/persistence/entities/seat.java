@@ -1,8 +1,13 @@
 package is.hi.hbv501g.verkefni.persistence.entities;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 
 @Entity
 @Table(name = "seats")
+@Getter
+@Setter
 
 public class seat {
     @Id
@@ -16,6 +21,7 @@ public class seat {
 
     @ManyToOne
     @JoinColumn(name = "hall_id")
+    @JsonBackReference
     private movieHall movieHall;
 
     public seat() {}
@@ -26,18 +32,4 @@ public class seat {
         this.movieHall = movieHall;
     }
 
-    // Getters & Setters
-    public Long getId() { return seatId; }
-
-    public int getRowNumber() { return rowNumber; }
-    public void setRowNumber(int rowNumber) { this.rowNumber = rowNumber; }
-
-    public int getSeatNumber() { return seatNumber; }
-    public void setSeatNumber(int seatNumber) { this.seatNumber = seatNumber; }
-
-    public boolean isBooked() { return isBooked; }
-    public void setBooked(boolean booked) { isBooked = booked; }
-
-    public movieHall getMovieHall() { return movieHall; }
-    public void setMovieHall(movieHall movieHall) { this.movieHall = movieHall; }
 }

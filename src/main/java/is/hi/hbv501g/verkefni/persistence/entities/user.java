@@ -1,9 +1,8 @@
 package is.hi.hbv501g.verkefni.persistence.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.JdbcTypeCode;
-import org.hibernate.type.SqlTypes;
 
 
 @Entity
@@ -13,6 +12,7 @@ import org.hibernate.type.SqlTypes;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@JsonIgnoreProperties({"passwordHash", "profilePicture", "profilePictureContentType"})
 public class user {
 
     @Id

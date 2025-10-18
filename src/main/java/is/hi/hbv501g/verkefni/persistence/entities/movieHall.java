@@ -1,5 +1,6 @@
 package is.hi.hbv501g.verkefni.persistence.entities;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -27,6 +28,7 @@ public class movieHall {
     private boolean nowShowing;
 
     @OneToMany(mappedBy = "movieHall", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
     private List<seat> seats;
 
 }

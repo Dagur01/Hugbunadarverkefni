@@ -59,7 +59,6 @@ public class bookingController {
         boolean seatTaken = bookingRepository.existsBySeat(seat);
         if (seatTaken) return ResponseEntity.status(409).body("Seat already booked");
 
-        // 🧩 Búa til bókun og tengja við user
         booking booking = new booking();
         booking.setMovie(movie);
         booking.setMovieHall(hall);

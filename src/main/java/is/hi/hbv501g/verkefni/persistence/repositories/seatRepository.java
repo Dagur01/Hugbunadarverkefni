@@ -8,7 +8,6 @@ import java.util.List;
 
 public interface seatRepository extends JpaRepository<seat, Long> {
     List<seat> findAllByMovieHall(movieHall movieHall);
-    boolean existsBySeatId(seat seat);
 }
 
 
