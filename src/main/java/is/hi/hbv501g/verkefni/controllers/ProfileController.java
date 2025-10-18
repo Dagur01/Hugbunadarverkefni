@@ -1,6 +1,7 @@
 package is.hi.hbv501g.verkefni.controllers;
 
 import is.hi.hbv501g.verkefni.controllers.dto.profileDtos;
+import is.hi.hbv501g.verkefni.persistence.repositories.bookingRepository;
 import is.hi.hbv501g.verkefni.persistence.repositories.userRepository;
 import is.hi.hbv501g.verkefni.security.jwtService;
 import lombok.RequiredArgsConstructor;
@@ -11,6 +12,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 
+
 @RestController
 @RequestMapping("/profile")
 @RequiredArgsConstructor
@@ -18,6 +20,8 @@ public class ProfileController {
 
     private final userRepository userRepository;
     private final jwtService jwtService;
+    private final bookingRepository bookingRepository;
+
 
 
     // Get logged in user's profile
@@ -41,11 +45,31 @@ public class ProfileController {
                         dataUrl = "data:" + ct + ";base64," + base64;
                     }
                     return ResponseEntity.ok(
-                            new profileDtos.ProfileResponse(u.getEmail(), u.getUsername(), base64) // or add dataUrl if you extend the DTO
+                            new profileDtos.ProfileResponse(u.getEmail(), u.getUsername(), base64)
                     );
                 })
                 .orElseGet(() -> ResponseEntity.status(404).body(null));
     }
+
+    @GetMapping(path = "/profile/bookings", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> getUserBookings(
+            @RequestHeader("Authorization") String authHeader
+    ) {
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            return ResponseEntity.status(401).body("Missing or invalid Authorization header");
+        }
+        String token = authHeader.substring(7);
+        if (!jwtService.validateToken(token)) {
+            return ResponseEntity.status(401).body("Invalid token");
+        }
+        String email = jwtService.extractUsername(token);
+        var user = userRepository.findByEmail(email)
+                .orElse(null);
+        if (user == null) return ResponseEntity.status(404).body("User not found");
+        var bookings = bookingRepository.findAllByUser(user);
+        return ResponseEntity.ok(bookings);
+    }
+
 
     // Update logged in user's profile username
     @PatchMapping(path = "/profile", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
