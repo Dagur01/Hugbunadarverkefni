@@ -8,11 +8,13 @@ Hæ
 ## Sprint 1
 
 ### Use case 1: Sign in to website
+
 POST "/auth/login" login - returns a token
 {"email": "admin@example.com","password": "Admin123"}
 ---
 
 ### Use case 7: Manage movies
+
 DELETE "/movies/:id" - delete a specific movie by id
 
 PATCH "/movies/:id" - update a specific movie by id
@@ -20,11 +22,13 @@ PATCH "/movies/:id" - update a specific movie by id
 ---
 
 ### Use case 8: Create account
+
 POST "/auth/signup"
 {"email": "","password": ""}
 ---
 
 ### Use case 16: Add new movies
+
 POST "/movies" - create a new movie: <br>
 {"title": "Inception","genre": "Sci-Fi","ageRating": "PG-13","duration": 148, }
 ---
