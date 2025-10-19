@@ -1,6 +1,7 @@
 package is.hi.hbv501g.verkefni.persistence.entities;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.boot.context.properties.bind.DefaultValue;
@@ -12,6 +13,7 @@ import org.springframework.boot.context.properties.bind.DefaultValue;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@JsonIgnoreProperties({"moviePicture"})
 public class movie {
 
     @Id
