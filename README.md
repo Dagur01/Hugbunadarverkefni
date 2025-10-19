@@ -11,6 +11,7 @@ Hæ
 
 POST "/auth/login" login - returns a token
 {"email": "admin@example.com","password": "Admin123"}
+
 ---
 
 ### Use case 7: Manage movies
@@ -25,12 +26,14 @@ PATCH "/movies/:id" - update a specific movie by id
 
 POST "/auth/signup"
 {"email": "","password": ""}
+
 ---
 
 ### Use case 16: Add new movies
 
 POST "/movies" - create a new movie: <br>
 {"title": "Inception","genre": "Sci-Fi","ageRating": "PG-13","duration": 148, }
+
 ---
 
 ## Sprint 2
