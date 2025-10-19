@@ -12,7 +12,6 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import is.hi.hbv501g.verkefni.controllers.dto.movieDtos;
 
 import java.io.IOException;
 import java.util.List;
@@ -124,8 +123,6 @@ public class movieController {
         }
     }
 
-    // myndir verða að vera í database, ekki cloudinary
-
     // admin - delete
     @DeleteMapping(path = "/movies/{movieId}")
     public ResponseEntity<Void> delete(@RequestHeader("Authorization") String authHeader,
@@ -151,7 +148,7 @@ public class movieController {
             @PathVariable Long movieId,
             @RequestPart("file") MultipartFile file
     ) {
-        //  1. Staðfesta JWT token (valfrjálst, ef þú vilt aðeins leyfa admin að hlaða upp)
+        //  1. Staðfesta JWT token
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             return ResponseEntity.status(401).body("Missing or invalid Authorization header");
         }

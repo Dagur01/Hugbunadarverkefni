@@ -1,32 +1,74 @@
 Hæ
 Hæ
 
-Render link: https://hugbunadarverkefni-weog.onrender.com
+# Movie Theater Web Application
 
-GET "/" - returns all movies that are currently showing
+## Render link: https://hugbunadarverkefni-weog.onrender.com
 
-GET "/movies" - returns all movies in the databaxse
+## Sprint 1
 
-GET "/movies/:id" - returns a specific movie by id
+### Use case 1: Sign in to website
+POST "/auth/login" login - returns a token
+{"email": "admin@example.com","password": "Admin123"}
+---
 
-POST "/movies" - create a new movie
-{"title": "Inception","genre": "Sci-Fi","ageRating": "PG-13","duration": 148, }
-
+### Use case 7: Manage movies
 DELETE "/movies/:id" - delete a specific movie by id
 
 PATCH "/movies/:id" - update a specific movie by id
 
-POST "/auth/login" login - returns a token
-{"email": "admin@example.com","password": "Admin123"}
+---
 
+### Use case 8: Create account
 POST "/auth/signup"
 {"email": "","password": ""}
+---
 
-GET "/auth/profile" - returns the currently logged in user
+### Use case 16: Add new movies
+POST "/movies" - create a new movie: <br>
+{"title": "Inception","genre": "Sci-Fi","ageRating": "PG-13","duration": 148, }
+---
 
-PATCH /auth/profile - update user profile 
+## Sprint 2
+
+### Use case 2: Manage user profile with a profile picture
 
 PATCH /auth/profile/picture - update user profile picture
+
+PATCH /auth/profile - update user profile
+
+---
+
+### Use case 11: Browse available movies
+
+GET "/" - returns all movies that are currently showing
+
+GET "/movies" - returns all movies in the database
+
+GET "/movies/:id" - returns a specific movie by id
+
+---
+
+### Use case 15: Add a movie poster image to a movie
+
+PATCH "/movies/{movieId}/picture" - update movie poster image
+
+### Use case 17: Modify a profile picture
+
+PATCH /auth/profile/picture - update user profile picture
+
+---
+
+## Sprint 3
+
+### Use case 9: Filter movies by genre
+
+GET "/movies/filter" - filter movies by: <br>{String movieTitle, String genre, Integer ageRating, Long duration}
+
+---
+
+## Other Endpoints
+GET "/auth/profile" - returns the currently logged in user
 
 GET "/moviehalls" - returns all movie halls
 
