@@ -1,4 +1,6 @@
 package is.hi.hbv501g.verkefni.Persistence.Repositories;
 
-public interface UserRepository {
-}
+import org.springframework.data.jpa.repository.JpaRepository;
+import is.hi.hbv501g.verkefni.Persistence.Entities.User;
+
+public interface UserRepository extends JpaRepository<User, String> {}

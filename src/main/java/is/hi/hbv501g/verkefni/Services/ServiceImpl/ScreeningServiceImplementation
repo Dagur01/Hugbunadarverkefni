@@ -1,0 +1,48 @@
+package is.hi.hbv501g.verkefni.Services;
+
+import is.hi.hbv501g.verkefni.Persistence.Entities.Screening;
+import is.hi.hbv501g.verkefni.Persistence.Repositories.ScreeningRepository;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+
+@Service
+@Transactional
+public class ScreeningServiceImplementation implements ScreeningService {
+
+    private final ScreeningRepository screeningRepository;
+
+    public ScreeningServiceImplementation(ScreeningRepository screeningRepository) {
+        this.screeningRepository = screeningRepository;
+    }
+
+    @Override
+    public Screening create(Screening s) {
+        return screeningRepository.save(s);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Screening get(Long id) {
+        return screeningRepository.findById(id)
+                .orElse(null);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<Screening> listByMovie(Long movieId) {
+        return screeningRepository.findByMovieId(movieId);
+    }
+
+    @Override
+    public Screening update(Long id, Screening update) {
+        update.setId(id);
+        return screeningRepository.save(update);
+    }
+
+    @Override
+    public void delete(Long id) {
+        screeningRepository.deleteById(id);
+    }
+}
