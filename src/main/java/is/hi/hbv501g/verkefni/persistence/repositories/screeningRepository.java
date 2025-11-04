@@ -1,4 +1,5 @@
 package is.hi.hbv501g.verkefni.persistence.repositories;
 
-public interface ScreeningRepository {
+
+public interface screeningRepository {
 }
