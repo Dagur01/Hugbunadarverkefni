@@ -1,9 +1,9 @@
 package is.hi.hbv501g.verkefni.controllers;
 
-import is.hi.hbv501g.verkefni.controllers.dto.profileDtos;
-import is.hi.hbv501g.verkefni.persistence.repositories.bookingRepository;
-import is.hi.hbv501g.verkefni.persistence.repositories.userRepository;
-import is.hi.hbv501g.verkefni.security.jwtService;
+import is.hi.hbv501g.verkefni.persistence.repositories.BookingRepository;
+import is.hi.hbv501g.verkefni.persistence.repositories.UserRepository;
+import is.hi.hbv501g.verkefni.controllers.dto.ProfileDtos;
+import is.hi.hbv501g.verkefni.security.JwtService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -18,9 +18,9 @@ import java.io.IOException;
 @RequiredArgsConstructor
 public class ProfileController {
 
-    private final userRepository userRepository;
-    private final jwtService jwtService;
-    private final bookingRepository bookingRepository;
+    private final UserRepository userRepository;
+    private final JwtService jwtService;
+    private final BookingRepository bookingRepository;
 
 
 
@@ -45,7 +45,7 @@ public class ProfileController {
                         dataUrl = "data:" + ct + ";base64," + base64;
                     }
                     return ResponseEntity.ok(
-                            new profileDtos.ProfileResponse(u.getEmail(), u.getUsername(), base64)
+                            new ProfileDtos.ProfileResponse(u.getEmail(), u.getUsername(), base64)
                     );
                 })
                 .orElseGet(() -> ResponseEntity.status(404).body(null));
@@ -75,7 +75,7 @@ public class ProfileController {
     @PatchMapping(path = "/profile", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> updateProfile(
             @RequestHeader("Authorization") String authHeader,
-            @RequestBody profileDtos.ProfileUpdateRequest req
+            @RequestBody ProfileDtos.ProfileUpdateRequest req
     ) {
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             return ResponseEntity.status(401).body("Missing or invalid Authorization header");

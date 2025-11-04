@@ -13,10 +13,10 @@ import java.util.Date;
 import java.util.Map;
 
 @Service
-public class jwtService {
+public class JwtService {
     private final SecretKey secretKey;
 
-    public jwtService(@Value("${jwt.secret}") String secret) {
+    public JwtService(@Value("${jwt.secret}") String secret) {
         this.secretKey = Keys.hmacShaKeyFor(secret.getBytes());
 
     }

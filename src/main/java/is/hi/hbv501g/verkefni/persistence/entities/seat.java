@@ -5,11 +5,14 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Entity
-@Table(name = "seats")
+@Table(
+  name = "seats",
+  uniqueConstraints = @UniqueConstraint(columnNames = {"hall_id", "row_number", "seat_number"})
+)
 @Getter
 @Setter
 
-public class seat {
+public class Seat {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long seatId;
@@ -22,11 +25,11 @@ public class seat {
     @ManyToOne
     @JoinColumn(name = "hall_id")
     @JsonBackReference
-    private movieHall movieHall;
+    private MovieHall movieHall;
 
-    public seat() {}
+    public Seat() {}
 
-    public seat(int rowNumber, int seatNumber, movieHall movieHall) {
+    public Seat(int rowNumber, int seatNumber, MovieHall movieHall) {
         this.rowNumber = rowNumber;
         this.seatNumber = seatNumber;
         this.movieHall = movieHall;

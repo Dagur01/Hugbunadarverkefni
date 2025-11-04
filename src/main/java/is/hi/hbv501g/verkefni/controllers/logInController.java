@@ -1,31 +1,29 @@
 package is.hi.hbv501g.verkefni.controllers;
-import is.hi.hbv501g.verkefni.controllers.dto.authDtos;
-import is.hi.hbv501g.verkefni.controllers.dto.profileDtos;
-import is.hi.hbv501g.verkefni.persistence.repositories.userRepository;
-import is.hi.hbv501g.verkefni.services.logInService;
-import is.hi.hbv501g.verkefni.security.jwtService;
+import is.hi.hbv501g.verkefni.security.JwtService;
+import is.hi.hbv501g.verkefni.controllers.dto.AuthDtos;
+import is.hi.hbv501g.verkefni.controllers.dto.ProfileDtos;
+import is.hi.hbv501g.verkefni.persistence.repositories.UserRepository;
+import is.hi.hbv501g.verkefni.services.LogInService;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
 import java.util.Map;
 
 @RestController
 @RequestMapping("/auth")
 @RequiredArgsConstructor
-public class logInController {
+public class LogInController {
 
-    private final logInService logInService;
-    private final userRepository userRepository;
-    private final jwtService jwtService;
+    private final UserRepository userRepository;
+    private final JwtService jwtService;
 
     // User login
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody authDtos.AuthRequest req){
-        boolean ok = logInService.login(req.email(), req.password());
+    public ResponseEntity<?> login(@RequestBody AuthDtos.AuthRequest req){
+        boolean ok = LogInService.login(req.email(), req.password());
         if (!ok) {
             return ResponseEntity.status(401).body("Invalid credentials");
         }
@@ -34,7 +32,7 @@ public class logInController {
                 .map(u -> u.getRole().name())
                 .orElse("USER");
         String token = jwtService.generateToken(req.email(), Map.of("role", user));
-        return ResponseEntity.ok(new authDtos.AuthResponse(token));
+        return ResponseEntity.ok(new AuthDtos.AuthResponse(token));
     }
 
     // Get logged in user's profile
@@ -58,7 +56,7 @@ public class logInController {
                         dataUrl = "data:" + ct + ";base64," + base64;
                     }
                     return ResponseEntity.ok(
-                            new profileDtos.ProfileResponse(u.getEmail(), u.getUsername(), base64) // or add dataUrl if you extend the DTO
+                            new ProfileDtos.ProfileResponse(u.getEmail(), u.getUsername(), base64) // or add dataUrl if you extend the DTO
                     );
                 })
                 .orElseGet(() -> ResponseEntity.status(404).body(null));

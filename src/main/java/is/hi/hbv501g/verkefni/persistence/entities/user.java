@@ -1,5 +1,8 @@
 package is.hi.hbv501g.verkefni.persistence.entities;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.*;
@@ -13,7 +16,7 @@ import lombok.*;
 @AllArgsConstructor
 @Builder
 @JsonIgnoreProperties({"passwordHash", "profilePicture", "profilePictureContentType"})
-public class user {
+public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -40,6 +43,26 @@ public class user {
 
 
     public enum Role {USER, ADMIN}
+
+    @ManyToMany
+    @JoinTable(
+            name = "favorites",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "movie_id")
+    )
+    private Set<Movie> favoriteMovies = new HashSet<>();
+
+    public Set<Movie> getFavoriteMovies() {
+        return favoriteMovies;
+    }
+
+    public void addFavoriteMovie(Movie movie) {
+        favoriteMovies.add(movie);
+    }
+
+    public void removeFavoriteMovie(Movie movie) {
+        favoriteMovies.remove(movie);
+    }
 
 
 

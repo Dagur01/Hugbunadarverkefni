@@ -14,7 +14,7 @@ import org.springframework.boot.context.properties.bind.DefaultValue;
 @AllArgsConstructor
 @Builder
 @JsonIgnoreProperties({"moviePicture"})
-public class movie {
+public class Movie {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

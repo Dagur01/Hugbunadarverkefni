@@ -13,7 +13,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class movieHall {
+public class MovieHall {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long movieHallId;
@@ -29,6 +29,6 @@ public class movieHall {
 
     @OneToMany(mappedBy = "movieHall", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
-    private List<seat> seats;
+    private List<Seat> seats;
 
 }

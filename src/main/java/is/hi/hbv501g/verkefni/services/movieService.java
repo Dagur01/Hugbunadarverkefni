@@ -1,19 +1,28 @@
 package is.hi.hbv501g.verkefni.services;
 
-import is.hi.hbv501g.verkefni.persistence.entities.movie;
-
 import java.util.List;
 
-public interface movieService {
+import is.hi.hbv501g.verkefni.persistence.entities.Movie;
 
-    movie create(String movieTitle, String genre, Integer ageRating, Long duration);
-    movie update(Long movieId, String movieTitle, String genre, Integer ageRating, Long duration, Boolean nowShowing);
+public interface MovieService {
+
+    Movie create(String movieTitle, String genre, Integer ageRating, Long duration);
+    Movie update(Long movieId, String movieTitle, String genre, Integer ageRating, Long duration, Boolean nowShowing);
     void delete(Long movieId);
 
-    List<movie> listNowPlaying();
-    List<movie> listMovies();
-    movie getMovieById(Long movieId);
-    List<movie> filterMovies(String movieTitle, String genre, Integer ageRating, Long duration);
+    static List<Movie> listNowPlaying() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'listNowPlaying'");
+    }
+    static List<Movie> listMovies() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'listMovies'");
+    }
+    Movie getMovieById(Long movieId);
+    static List<Movie> filterMovies(String movieTitle, String genre, Integer ageRating, Long duration) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'filterMovies'");
+    }
 
-    List<movie> getMoviesByGenre(String genre);
+    List<Movie> getMoviesByGenre(String genre);
 }

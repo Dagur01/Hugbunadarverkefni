@@ -1,17 +1,17 @@
 package is.hi.hbv501g.verkefni.services;
 
-import is.hi.hbv501g.verkefni.persistence.entities.movieHall;
-
 import java.util.List;
 
-public interface movieHallService {
+import is.hi.hbv501g.verkefni.persistence.entities.MovieHall;
 
-    movieHall create(String name, String location);
-    movieHall update(Long movieHallId, String name, String location, Boolean nowShowing);
+public interface MovieHallService {
+
+    MovieHall create(String name, String location);
+    MovieHall update(Long movieHallId, String name, String location, Boolean nowShowing);
     void delete(Long movieHallId);
 
-    List<movieHall> listNowPlaying();
-    List<movieHall> listMovieHalls();
-    movieHall getMovieHallById(Long movieHallId);
-    List<movieHall> filterMovieHalls(String name, String location);
+    List<MovieHall> listNowPlaying();
+    List<MovieHall> listMovieHalls();
+    MovieHall getMovieHallById(Long movieHallId);
+    List<MovieHall> filterMovieHalls(String name, String location);
 }

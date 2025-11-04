@@ -1,9 +1,9 @@
 package is.hi.hbv501g.verkefni.services.implementations;
 
 
-import is.hi.hbv501g.verkefni.persistence.entities.movie;
-import is.hi.hbv501g.verkefni.persistence.repositories.movieRepository;
-import is.hi.hbv501g.verkefni.services.movieService;
+import is.hi.hbv501g.verkefni.persistence.repositories.MovieRepository;
+import is.hi.hbv501g.verkefni.persistence.entities.Movie;
+import is.hi.hbv501g.verkefni.services.MovieService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -11,13 +11,13 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class movieServiceImplementation implements movieService {
+public class MovieServiceImplementation implements MovieService {
 
-    private final movieRepository movieRepository;
+    private final MovieRepository movieRepository;
 
     @Override
-    public movie create (String Title, String genre, Integer ageRating, Long duration){
-        movie movie = is.hi.hbv501g.verkefni.persistence.entities.movie.builder()
+    public Movie create (String Title, String genre, Integer ageRating, Long duration){
+        Movie movie = is.hi.hbv501g.verkefni.persistence.entities.Movie.builder()
                 .title(Title)
                 .genre(genre)
                 .ageRating(ageRating)
@@ -29,8 +29,8 @@ public class movieServiceImplementation implements movieService {
     }
 
     @Override
-    public movie update(Long movieId, String movieTitle, String genre, Integer ageRating, Long duration, Boolean nowShowing){
-        movie movie = movieRepository.findById(movieId)
+    public Movie update(Long movieId, String movieTitle, String genre, Integer ageRating, Long duration, Boolean nowShowing){
+        Movie movie = movieRepository.findById(movieId)
                 .orElseThrow(() ->  new IllegalArgumentException("Movie not found"));
         movie.setTitle(movieTitle);
         movie.setGenre(genre);
@@ -45,24 +45,21 @@ public class movieServiceImplementation implements movieService {
         movieRepository.deleteById(movieId);
     }
 
-    @Override
-    public List<movie> listNowPlaying(){
+    public List<Movie> listNowPlaying(){
         return movieRepository.findByNowShowingTrue();
     }
 
-    @Override
-    public List<movie> listMovies() {
+    public List<Movie> listMovies() {
         return movieRepository.findAll();
     }
 
     @Override
-    public movie getMovieById(Long movieId) {
+    public Movie getMovieById(Long movieId) {
         return movieRepository.findById(movieId)
                 .orElseThrow(() -> new IllegalArgumentException("Movie not found"));
     }
 
-    @Override
-    public List<movie> filterMovies(String movieTitle, String genre, Integer ageRating, Long duration) {
+    public List<Movie> filterMovies(String movieTitle, String genre, Integer ageRating, Long duration) {
         return movieRepository.findAll().stream()
                 .filter(m -> movieTitle == null || m.getTitle().toLowerCase().contains(movieTitle.toLowerCase()))
                 .filter(m -> genre == null || m.getGenre().equalsIgnoreCase(genre))
@@ -72,7 +69,7 @@ public class movieServiceImplementation implements movieService {
     }
 
     @Override
-    public List<movie> getMoviesByGenre(String genre) {
+    public List<Movie> getMoviesByGenre(String genre) {
         return movieRepository.findByGenre(genre);
     }
 }

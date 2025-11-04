@@ -1,7 +1,7 @@
 package is.hi.hbv501g.verkefni.controllers.dto;
 
-public class profileDtos {
-    private profileDtos() {}
+public class ProfileDtos {
+    private ProfileDtos() {}
 
     // profilePictureBase64 holds the image as Base64 string in JSON responses
     public record ProfileResponse(String email, String username, String profilePictureBase64) {}

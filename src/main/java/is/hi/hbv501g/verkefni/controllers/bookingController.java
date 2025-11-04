@@ -1,38 +1,40 @@
 package is.hi.hbv501g.verkefni.controllers;
-import is.hi.hbv501g.verkefni.security.jwtService;
 import org.springframework.web.bind.annotation.*;
-import is.hi.hbv501g.verkefni.controllers.dto.bookingCreateDtos;
+
+import is.hi.hbv501g.verkefni.controllers.dto.BookingCreateDtos;
 import is.hi.hbv501g.verkefni.persistence.entities.*;
 import is.hi.hbv501g.verkefni.persistence.repositories.*;
+import is.hi.hbv501g.verkefni.security.JwtService;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 
 
 @RestController
 @RequestMapping("/bookings")
-public class bookingController {
+public class BookingController {
     @Autowired
-    private movieRepository movieRepository;
+    private MovieRepository movieRepository;
 
     @Autowired
-    private movieHallRepository movieHallRepository;
+    private MovieHallRepository movieHallRepository;
 
     @Autowired
-    private seatRepository seatRepository;
+    private SeatRepository seatRepository;
 
     @Autowired
-    private bookingRepository bookingRepository;
+    private BookingRepository bookingRepository;
 
     @Autowired
-    private userRepository userRepository;
+    private UserRepository userRepository;
 
     @Autowired
-    private jwtService jwtService;
+    private JwtService jwtService;
 
     @PostMapping
     public ResponseEntity<?> createBooking(
             @RequestHeader("Authorization") String authHeader,
-            @RequestBody bookingCreateDtos dto
+            @RequestBody BookingCreateDtos dto
     ) {
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             return ResponseEntity.status(401).body("Missing or invalid Authorization header");
@@ -59,7 +61,7 @@ public class bookingController {
         boolean seatTaken = bookingRepository.existsBySeat(seat);
         if (seatTaken) return ResponseEntity.status(409).body("Seat already booked");
 
-        booking booking = new booking();
+        Booking booking = new Booking();
         booking.setMovie(movie);
         booking.setMovieHall(hall);
         booking.setSeat(seat);

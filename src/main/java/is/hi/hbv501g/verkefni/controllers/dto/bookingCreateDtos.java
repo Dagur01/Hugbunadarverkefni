@@ -1,6 +1,6 @@
 package is.hi.hbv501g.verkefni.controllers.dto;
 
-public class bookingCreateDtos {
+public class BookingCreateDtos {
     private Long movieId;
     private Long hallId;
     private Long seatId;
