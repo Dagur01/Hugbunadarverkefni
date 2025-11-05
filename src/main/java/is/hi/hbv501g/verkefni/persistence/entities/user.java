@@ -3,6 +3,11 @@ package is.hi.hbv501g.verkefni.persistence.entities;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.*;
+import java.util.HashSet;
+import java.util.Set;
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.JoinColumn;
 
 
 @Entity
@@ -40,6 +45,26 @@ public class user {
 
 
     public enum Role {USER, ADMIN}
+
+    @ManyToMany
+    @JoinTable(
+            name = "favorites",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "movie_id")
+    )
+    private Set<movie> favoriteMovies = new HashSet<>();
+
+    public Set<movie> getFavoriteMovies() {
+        return favoriteMovies;
+    }
+
+    public void addFavoriteMovie(movie movie) {
+        favoriteMovies.add(movie);
+    }
+
+    public void removeFavoriteMovie(movie movie) {
+        favoriteMovies.remove(movie);
+    }
 
 
 

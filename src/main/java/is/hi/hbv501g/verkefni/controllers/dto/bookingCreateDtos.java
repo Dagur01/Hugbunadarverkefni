@@ -5,6 +5,8 @@ public class bookingCreateDtos {
     private Long hallId;
     private Long seatId;
 
+    private Long screeningId;
+
     // Getters & setters
     public Long getMovieId() { return movieId; }
     public void setMovieId(Long movieId) { this.movieId = movieId; }
@@ -14,4 +16,12 @@ public class bookingCreateDtos {
 
     public Long getSeatId() { return seatId; }
     public void setSeatId(Long seatId) { this.seatId = seatId; }
+
+    public Long getScreeningId() {
+        return screeningId;
+    }
+
+    public void setScreeningId(Long screeningId) {
+        this.screeningId = screeningId;
+    }
 }

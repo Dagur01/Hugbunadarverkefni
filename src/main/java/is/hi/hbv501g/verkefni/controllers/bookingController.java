@@ -11,23 +11,13 @@ import org.springframework.http.ResponseEntity;
 @RestController
 @RequestMapping("/bookings")
 public class bookingController {
-    @Autowired
-    private movieRepository movieRepository;
-
-    @Autowired
-    private movieHallRepository movieHallRepository;
-
-    @Autowired
-    private seatRepository seatRepository;
-
-    @Autowired
-    private bookingRepository bookingRepository;
-
-    @Autowired
-    private userRepository userRepository;
-
-    @Autowired
-    private jwtService jwtService;
+    @Autowired private movieRepository movieRepository;
+    @Autowired private movieHallRepository movieHallRepository;
+    @Autowired private seatRepository seatRepository;
+    @Autowired private bookingRepository bookingRepository;
+    @Autowired private userRepository userRepository;
+    @Autowired private screeningRepository screeningRepository;
+    @Autowired private jwtService jwtService;
 
     @PostMapping
     public ResponseEntity<?> createBooking(
@@ -56,6 +46,9 @@ public class bookingController {
         var seat = seatRepository.findById(dto.getSeatId()).orElse(null);
         if (seat == null) return ResponseEntity.status(404).body("Seat not found");
 
+        var screening = screeningRepository.findById(dto.getScreeningId()).orElse(null);
+        if (screening == null) return ResponseEntity.status(404).body("Screening not found");
+
         boolean seatTaken = bookingRepository.existsBySeat(seat);
         if (seatTaken) return ResponseEntity.status(409).body("Seat already booked");
 
@@ -64,10 +57,10 @@ public class bookingController {
         booking.setMovieHall(hall);
         booking.setSeat(seat);
         booking.setUser(user);
+        booking.setScreening(screening);
 
         bookingRepository.save(booking);
-        return ResponseEntity.ok("Booking created successfully for user: " + user.getEmail());
+        return ResponseEntity.ok("Booking created successfully for " + user.getEmail() +
+                " at time " + screening.getScreeningTime());
     }
-
-
 }
