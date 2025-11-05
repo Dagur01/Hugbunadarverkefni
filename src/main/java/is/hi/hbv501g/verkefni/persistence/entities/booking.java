@@ -28,6 +28,10 @@ public class booking {
     @JoinColumn(name = "user_id", nullable = false)
     private user user;
 
+    @ManyToOne
+    @JoinColumn(name = "screening_id", nullable = false)
+    private screening screening;
+
     public booking() {}
 
 }
