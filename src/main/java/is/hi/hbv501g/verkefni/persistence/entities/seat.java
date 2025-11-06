@@ -16,6 +16,7 @@ public class seat {
 
     private int rowNumber;
     private int seatNumber;
+    private int price;
 
     private boolean isBooked = false;
 
@@ -26,9 +27,10 @@ public class seat {
 
     public seat() {}
 
-    public seat(int rowNumber, int seatNumber, movieHall movieHall) {
+    public seat(int rowNumber, int seatNumber, movieHall movieHall, int price) {
         this.rowNumber = rowNumber;
         this.seatNumber = seatNumber;
+        this.price = price;
         this.movieHall = movieHall;
     }
 

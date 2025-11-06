@@ -23,14 +23,15 @@ public class seatController {
     @PostMapping("/add")
     public ResponseEntity<?> addSeat(@RequestParam Long hallId,
                                      @RequestParam int rowNumber,
-                                     @RequestParam int seatNumber) {
+                                     @RequestParam int seatNumber,
+                                     @RequestParam int price) {
 
         movieHall hall = movieHallRepository.findById(hallId).orElse(null);
         if (hall == null) {
             return ResponseEntity.status(404).body("Movie hall not found");
         }
 
-        seat seat = new seat(rowNumber, seatNumber, hall);
+        seat seat = new seat(rowNumber, seatNumber, hall, price);
         seatRepository.save(seat);
 
         return ResponseEntity.ok("Seat added successfully");
