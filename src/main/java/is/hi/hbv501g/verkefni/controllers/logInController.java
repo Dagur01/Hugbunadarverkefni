@@ -8,9 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
 import java.util.Map;
 
 @RestController
@@ -33,7 +31,7 @@ public class logInController {
         String user = userRepository.findByEmail(req.email())
                 .map(u -> u.getRole().name())
                 .orElse("USER");
-        String token = jwtService.generateToken(req.email(), Map.of("role", user));
+        String token = jwtService.generateToken(req.email() ,Map.of("role", user ));
         return ResponseEntity.ok(new authDtos.AuthResponse(token));
     }
 
@@ -47,7 +45,7 @@ public class logInController {
         if (!jwtService.validateToken(token)) {
             return ResponseEntity.status(401).body("Invalid token");
         }
-        String email = jwtService.extractUsername(token);
+        String email = jwtService.extractEmail(token);
 
         return userRepository.findByEmail(email)
                 .map(u -> {
