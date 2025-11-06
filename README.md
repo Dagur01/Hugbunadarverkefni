@@ -107,7 +107,7 @@ Bæta við favorite
 POST http://localhost:8080/favorites/movie/1
 
 fá favorite
-GET http://localhost:8080/favorites/movie/1
+GET http://localhost:8080/favorites
 
 Bæta við screening
 POST http://localhost:8080/screenings?screeningTime=2025-10-14T20:00:00
