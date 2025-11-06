@@ -4,7 +4,6 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
 
 import javax.crypto.SecretKey;
@@ -23,6 +22,7 @@ public class jwtService {
 
     public String generateToken(String subject, Map<String, Object> claims) {
         Instant now = Instant.now();
+
         return Jwts.builder()
                 .setSubject(subject)
                 .addClaims(claims)
@@ -49,9 +49,10 @@ public class jwtService {
         return role != null ? role.toString() : null;
     }
 
-    public String extractUsername(String token) {
+    public String extractEmail(String token) {
         String compact = token.startsWith("Bearer ") ? token.substring(7) : token;
         Claims claims = Jwts.parserBuilder().setSigningKey(secretKey).build().parseClaimsJws(compact).getBody();
         return claims.getSubject();
     }
+
 }

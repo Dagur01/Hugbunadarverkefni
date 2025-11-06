@@ -34,7 +34,7 @@ public class ProfileController {
         if (!jwtService.validateToken(token)) {
             return ResponseEntity.status(401).body("Invalid token");
         }
-        String email = jwtService.extractUsername(token);
+        String email = jwtService.extractEmail(token);
 
         return userRepository.findByEmail(email)
                 .map(u -> {
@@ -62,7 +62,7 @@ public class ProfileController {
         if (!jwtService.validateToken(token)) {
             return ResponseEntity.status(401).body("Invalid token");
         }
-        String email = jwtService.extractUsername(token);
+        String email = jwtService.extractEmail(token);
         var user = userRepository.findByEmail(email)
                 .orElse(null);
         if (user == null) return ResponseEntity.status(404).body("User not found");
@@ -84,7 +84,7 @@ public class ProfileController {
         if (!jwtService.validateToken(token)) {
             return ResponseEntity.status(401).body("Invalid token");
         }
-        String email = jwtService.extractUsername(token);
+        String email = jwtService.extractEmail(token);
 
         var user = userRepository.findByEmail(email)
                 .orElse(null);
@@ -111,7 +111,7 @@ public class ProfileController {
         if (!jwtService.validateToken(token)) {
             return ResponseEntity.status(401).body("Invalid token");
         }
-        String email = jwtService.extractUsername(token);
+        String email = jwtService.extractEmail(token);
 
 
         var user = userRepository.findByEmail(email)
