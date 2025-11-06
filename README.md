@@ -101,6 +101,18 @@ Sækja öll sæti fyrir sal
 GET http://localhost:8080/seats/hall/1
 
 Bæta við sæti
-POST http://localhost:8080/seats/add?hallId=1&rowNumber=2&seatNumber=5
+POST http://localhost:8080/seats/add?hallId=1&rowNumber=2&seatNumber=5&price=2500
+
+Bæta við favorite
+POST http://localhost:8080/favorites/movie/1
+fá favorite
+POST http://localhost:8080/favorites/movie/1
+
+Bæta við screening
+POST http://localhost:8080/screenings?screeningTime=2025-10-14T20:00:00
+
+fá screening
+POST http://localhost:8080/screenings
+
 
 
