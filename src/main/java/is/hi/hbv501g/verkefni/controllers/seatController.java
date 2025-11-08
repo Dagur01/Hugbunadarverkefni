@@ -24,7 +24,7 @@ public class seatController {
     public ResponseEntity<?> addSeat(@RequestParam Long hallId,
                                      @RequestParam int rowNumber,
                                      @RequestParam int seatNumber,
-                                     @RequestParam int price) {
+                                     @RequestParam Integer price) {
 
         movieHall hall = movieHallRepository.findById(hallId).orElse(null);
         if (hall == null) {

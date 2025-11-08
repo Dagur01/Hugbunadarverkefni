@@ -99,44 +99,46 @@ public class friendServiceImpl implements friendService {
     }
 
     @Override
-    public ProfileDto getProfile(String username, String viewerUsername) {
-        user u = userRepository.findByUsername(username)
+    public ProfileDto getProfile(String email, String viewerEmail) {
+        user target = userRepository.findByEmail(email)
                 .orElseThrow(() -> new NoSuchElementException("User not found"));
 
-        List<String> friends = listFriendsUsernames(username);
-
-        ProfileDto dto = new ProfileDto(u.getUsername(), friends);
-
-        return dto;
-    }
-
-
-    // movie invitations
-
-    @Override
-    public movieInvitation inviteFriendToMovie(String inviterEmail, String inviteeEmail, Long movieId) {
-        if (inviterEmail.equalsIgnoreCase(inviteeEmail)) {
-            throw new IllegalArgumentException("Cannot invite yourself");
-        }
-        user inviter = userRepository.findByEmail(inviterEmail)
-                .orElseThrow(() -> new NoSuchElementException("Inviter not found"));
-        user invitee = userRepository.findByEmail(inviteeEmail)
-                .orElseThrow(() -> new NoSuchElementException("Invitee not found"));
-
-        Optional<friendRequest> accepted = friendRequestRepository.findByFromUserAndToUserAndStatus(inviter, invitee, "ACCEPTED")
-                .or(() -> friendRequestRepository.findByFromUserAndToUserAndStatus(invitee, inviter, "ACCEPTED"));
-        if (accepted.isEmpty()) {
-            throw new IllegalStateException("Users are not friends");
+        // Ef enginn skoðandi (ekki innskráður)
+        if (viewerEmail == null) {
+            return ProfileDto.builder()
+                    .email(target.getEmail())
+                    .username(target.getUsername())
+                    .isFriend(false)
+                    .friends(List.of()) // ekkert vinayfirlit sést
+                    .profilePictureBase64(null)
+                    .build();
         }
 
-        movieInvitation inv = movieInvitation.builder()
-                .inviter(inviter)
-                .invitee(invitee)
-                .movieId(movieId)
-                .status("SENT")
-                .createdAt(LocalDateTime.now())
+        // Finna þann sem skoðar
+        user viewer = userRepository.findByEmail(viewerEmail)
+                .orElseThrow(() -> new NoSuchElementException("Viewer not found"));
+
+        boolean isSelf = viewer.getUserId() == target.getUserId();
+        boolean isFriend = areFriends(viewer, target);
+
+        List<String> friends = listFriendsUsernames(target.getEmail());
+
+        return ProfileDto.builder()
+                .username(target.getUsername())
+                .email(target.getEmail()) // aðeins eigandi sér email sitt
+                .isFriend(isFriend)
+                .friends(friends)
+                .profilePictureBase64(target.getProfilePicture() != null
+                        ? java.util.Base64.getEncoder().encodeToString(target.getProfilePicture())
+                        : null)
                 .build();
-
-        return movieInvitationRepository.save(inv);
     }
+
+    // hjálparaðferð til að athuga vináttu
+    private boolean areFriends(user a, user b) {
+        return friendRequestRepository.findByFromUserAndToUserAndStatus(a, b, "ACCEPTED").isPresent()
+                || friendRequestRepository.findByFromUserAndToUserAndStatus(b, a, "ACCEPTED").isPresent();
+    }
+
+
 }
