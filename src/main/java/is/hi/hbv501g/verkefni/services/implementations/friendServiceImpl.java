@@ -96,14 +96,46 @@ public class friendServiceImpl implements friendService {
     }
 
     @Override
-    public ProfileDto getProfile(String username, String viewerUsername) {
-        user u = userRepository.findByUsername(username)
+    public ProfileDto getProfile(String email, String viewerEmail) {
+        user target = userRepository.findByEmail(email)
                 .orElseThrow(() -> new NoSuchElementException("User not found"));
 
-        List<String> friends = listFriendsUsernames(username);
+        // Ef enginn skoðandi (ekki innskráður)
+        if (viewerEmail == null) {
+            return ProfileDto.builder()
+                    .email(target.getEmail())
+                    .username(target.getUsername())
+                    .isFriend(false)
+                    .friends(List.of()) // ekkert vinayfirlit sést
+                    .profilePictureBase64(null)
+                    .build();
+        }
 
-        ProfileDto dto = new ProfileDto(u.getUsername(), friends);
+        // Finna þann sem skoðar
+        user viewer = userRepository.findByEmail(viewerEmail)
+                .orElseThrow(() -> new NoSuchElementException("Viewer not found"));
 
-        return dto;
+        boolean isSelf = viewer.getUserId() == target.getUserId();
+        boolean isFriend = areFriends(viewer, target);
+
+        List<String> friends = listFriendsUsernames(target.getEmail());
+
+        return ProfileDto.builder()
+                .username(target.getUsername())
+                .email(target.getEmail()) // aðeins eigandi sér email sitt
+                .isFriend(isFriend)
+                .friends(friends)
+                .profilePictureBase64(target.getProfilePicture() != null
+                        ? java.util.Base64.getEncoder().encodeToString(target.getProfilePicture())
+                        : null)
+                .build();
     }
+
+    // hjálparaðferð til að athuga vináttu
+    private boolean areFriends(user a, user b) {
+        return friendRequestRepository.findByFromUserAndToUserAndStatus(a, b, "ACCEPTED").isPresent()
+                || friendRequestRepository.findByFromUserAndToUserAndStatus(b, a, "ACCEPTED").isPresent();
+    }
+
+
 }
