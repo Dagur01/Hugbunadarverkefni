@@ -2,8 +2,10 @@ package is.hi.hbv501g.verkefni.services.implementations;
 
 import is.hi.hbv501g.verkefni.controllers.dto.ProfileDto;
 import is.hi.hbv501g.verkefni.persistence.entities.friendRequest;
+import is.hi.hbv501g.verkefni.persistence.entities.movieInvitation;
 import is.hi.hbv501g.verkefni.persistence.entities.user;
 import is.hi.hbv501g.verkefni.persistence.repositories.friendRequestRepository;
+import is.hi.hbv501g.verkefni.persistence.repositories.movieInvitationRepository;
 import is.hi.hbv501g.verkefni.persistence.repositories.userRepository;
 import is.hi.hbv501g.verkefni.services.friendService;
 import lombok.RequiredArgsConstructor;
@@ -21,6 +23,7 @@ public class friendServiceImpl implements friendService {
 
     private final userRepository userRepository;
     private final friendRequestRepository friendRequestRepository;
+    private final movieInvitationRepository movieInvitationRepository;
 
     @Override
     public friendRequest sendRequest(String fromEmail, String toEmail) {
