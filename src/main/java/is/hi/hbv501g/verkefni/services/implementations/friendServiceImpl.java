@@ -2,8 +2,10 @@ package is.hi.hbv501g.verkefni.services.implementations;
 
 import is.hi.hbv501g.verkefni.controllers.dto.ProfileDto;
 import is.hi.hbv501g.verkefni.persistence.entities.friendRequest;
+import is.hi.hbv501g.verkefni.persistence.entities.movieInvitation;
 import is.hi.hbv501g.verkefni.persistence.entities.user;
 import is.hi.hbv501g.verkefni.persistence.repositories.friendRequestRepository;
+import is.hi.hbv501g.verkefni.persistence.repositories.movieInvitationRepository;
 import is.hi.hbv501g.verkefni.persistence.repositories.userRepository;
 import is.hi.hbv501g.verkefni.services.friendService;
 import lombok.RequiredArgsConstructor;
@@ -21,6 +23,7 @@ public class friendServiceImpl implements friendService {
 
     private final userRepository userRepository;
     private final friendRequestRepository friendRequestRepository;
+    private final movieInvitationRepository movieInvitationRepository;
 
     @Override
     public friendRequest sendRequest(String fromEmail, String toEmail) {
@@ -105,5 +108,35 @@ public class friendServiceImpl implements friendService {
         ProfileDto dto = new ProfileDto(u.getUsername(), friends);
 
         return dto;
+    }
+
+
+    // movie invitations
+
+    @Override
+    public movieInvitation inviteFriendToMovie(String inviterEmail, String inviteeEmail, Long movieId) {
+        if (inviterEmail.equalsIgnoreCase(inviteeEmail)) {
+            throw new IllegalArgumentException("Cannot invite yourself");
+        }
+        user inviter = userRepository.findByEmail(inviterEmail)
+                .orElseThrow(() -> new NoSuchElementException("Inviter not found"));
+        user invitee = userRepository.findByEmail(inviteeEmail)
+                .orElseThrow(() -> new NoSuchElementException("Invitee not found"));
+
+        Optional<friendRequest> accepted = friendRequestRepository.findByFromUserAndToUserAndStatus(inviter, invitee, "ACCEPTED")
+                .or(() -> friendRequestRepository.findByFromUserAndToUserAndStatus(invitee, inviter, "ACCEPTED"));
+        if (accepted.isEmpty()) {
+            throw new IllegalStateException("Users are not friends");
+        }
+
+        movieInvitation inv = movieInvitation.builder()
+                .inviter(inviter)
+                .invitee(invitee)
+                .movieId(movieId)
+                .status("SENT")
+                .createdAt(LocalDateTime.now())
+                .build();
+
+        return movieInvitationRepository.save(inv);
     }
 }
