@@ -141,4 +141,23 @@ public class ProfileController {
             return ResponseEntity.status(500).body("Failed to read file");
         }
     }
+
+    @DeleteMapping(path = "/delete")
+    public ResponseEntity<?> deleteProfile(
+            @RequestHeader("Authorization") String authHeader
+    ) {
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            return ResponseEntity.status(401).body("Missing or invalid Authorization header");
+        }
+        String token = authHeader.substring(7);
+        if (!jwtService.validateToken(token)) {
+            return ResponseEntity.status(401).body("Invalid token");
+        }
+        String email = jwtService.extractEmail(token);
+        var user = userRepository.findByEmail(email)
+                .orElse(null);
+        if (user == null) return ResponseEntity.status(404).body("User not found");
+        userRepository.delete(user);
+        return ResponseEntity.ok("User deleted");
+    }
 }
