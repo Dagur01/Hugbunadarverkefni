@@ -141,4 +141,32 @@ public class friendServiceImpl implements friendService {
     }
 
 
+    @Override
+    public movieInvitation inviteFriendToMovie(String inviterEmail, String inviteeEmail, Long movieId) {
+        if (inviterEmail.equalsIgnoreCase(inviteeEmail)) {
+            throw new IllegalArgumentException("Cannot invite yourself");
+        }
+        user inviter = userRepository.findByEmail(inviterEmail)
+                .orElseThrow(() -> new NoSuchElementException("Inviter not found"));
+        user invitee = userRepository.findByEmail(inviteeEmail)
+                .orElseThrow(() -> new NoSuchElementException("Invitee not found"));
+
+        Optional<friendRequest> accepted = friendRequestRepository.findByFromUserAndToUserAndStatus(inviter, invitee, "ACCEPTED")
+                .or(() -> friendRequestRepository.findByFromUserAndToUserAndStatus(invitee, inviter, "ACCEPTED"));
+        if (accepted.isEmpty()) {
+            throw new IllegalStateException("Users are not friends");
+        }
+
+        movieInvitation inv = movieInvitation.builder()
+                .inviter(inviter)
+                .invitee(invitee)
+                .movieId(movieId)
+                .status("SENT")
+                .createdAt(LocalDateTime.now())
+                .build();
+
+        return movieInvitationRepository.save(inv);
+    }
+
+
 }
