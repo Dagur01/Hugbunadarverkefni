@@ -11,4 +11,6 @@ public interface friendService {
     friendRequest rejectRequest(Long requestId, String actingEmail);
     List<String> listFriendsUsernames(String username);
     ProfileDto getProfile(String username, String viewerUsername);
+
+
 }
