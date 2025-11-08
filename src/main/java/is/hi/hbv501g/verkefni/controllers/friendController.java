@@ -109,5 +109,23 @@ public class friendController {
         }
     }
 
+    @GetMapping(path = "/friends/list", produces = "application/json")
+    public ResponseEntity<?> listFriends(@RequestHeader("Authorization") String authHeader) {
+        String token = extractToken(authHeader);
+        if (token == null || !jwtService.validateToken(token)) {
+            return ResponseEntity.status(401).body("Invalid or missing token");
+        }
+        String email = jwtService.extractEmail(token);
+        if (email == null || email.isBlank()) {
+            return ResponseEntity.status(401).body("Token does not contain an email");
+        }
+        try {
+            var friends = friendService.listFriendsUsernames(email);
+            return ResponseEntity.ok(friends);
+        } catch (Exception e) {
+            return ResponseEntity.status(400).body(Map.of("error", e.getClass().getSimpleName(), "message", e.getMessage()));
+        }
+    }
+
 
 }

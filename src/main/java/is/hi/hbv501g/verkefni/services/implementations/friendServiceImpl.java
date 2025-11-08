@@ -90,7 +90,7 @@ public class friendServiceImpl implements friendService {
                 .orElseThrow(() -> new NoSuchElementException("User not found"));
         List<friendRequest> accepted = friendRequestRepository.findByFromUserOrToUserAndStatus(u, u, "ACCEPTED");
         return accepted.stream()
-                .map(fr -> fr.getFromUser().getUserId() == (u.getUserId()) ? fr.getToUser().getUsername() : fr.getFromUser().getUsername())
+                .map(fr -> fr.getFromUser().getUserId() == (u.getUserId()) ? fr.getToUser().getEmail() : fr.getFromUser().getEmail())
                 .distinct()
                 .collect(Collectors.toList());
     }
