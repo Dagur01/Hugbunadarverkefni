@@ -75,6 +75,7 @@ GET "/movies/filter" - filter movies by: <br>{String movieTitle, String genre, I
 ---
 
 ## Other Endpoints
+
 GET "/auth/profile" - returns the currently logged in user
 
 GET "/moviehalls" - returns all movie halls
@@ -87,9 +88,10 @@ DELETE "/moviehalls/:id" - delete a movie hall
 
 POST http://localhost:8080/bookings
 {
-  "movieId": 1,
-  "hallId": 1,
-  "seatId": 5
+"movieId": 1,
+"hallId": 1,
+"seatId": 5
+"Discount Code": "STUDENT20"
 }
 
 GET http://localhost:8080/bookings
@@ -115,5 +117,7 @@ POST http://localhost:8080/screenings?screeningTime=2025-10-14T20:00:00
 fá screening
 GET http://localhost:8080/screenings
 
+Sjá Discount kóða
+GET http://localhost:8080/discounts
 
 
