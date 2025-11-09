@@ -12,7 +12,6 @@ public class DiscountServiceImpl implements DiscountService {
     private final List<Discount> discountCodeRepository = new CopyOnWriteArrayList<>();
 
     public DiscountServiceImpl() {
-        // Pre-populate with default discount codes
         discountCodeRepository.add(new Discount("STUDENT20", 20));
         discountCodeRepository.add(new Discount("FIRST50", 50));
         discountCodeRepository.add(new Discount("WELCOME10", 10));
@@ -30,7 +29,6 @@ public class DiscountServiceImpl implements DiscountService {
             return null;
         }
 
-        // Case-insensitive search and trim whitespace
         String normalizedCode = code.trim().toUpperCase();
 
         return discountCodeRepository.stream()
@@ -49,7 +47,6 @@ public class DiscountServiceImpl implements DiscountService {
             throw new IllegalArgumentException("Percentage must be between 0 and 100");
         }
 
-        // Check if code already exists
         if (getByCode(code) != null) {
             throw new IllegalArgumentException("Discount code already exists: " + code);
         }
@@ -70,7 +67,7 @@ public class DiscountServiceImpl implements DiscountService {
         if (discount == null) {
             throw new IllegalArgumentException("Invalid discount code: " + code);
         }
-        
+
         return discount;
     }
 }
