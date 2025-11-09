@@ -19,7 +19,6 @@ import java.util.NoSuchElementException;
 @RequiredArgsConstructor
 public class friendController {
 
-    private static final Logger log = LoggerFactory.getLogger(friendController.class);
 
     private final friendService friendService;
     private final jwtService jwtService;
