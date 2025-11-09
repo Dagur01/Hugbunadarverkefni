@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
-public class screening {
+public class Screening {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -13,9 +13,9 @@ public class screening {
     @Column(nullable = false)
     private LocalDateTime screeningTime;
 
-    public screening() {}
+    public Screening() {}
 
-    public screening(LocalDateTime screeningTime) {
+    public Screening(LocalDateTime screeningTime) {
         this.screeningTime = screeningTime;
     }
 

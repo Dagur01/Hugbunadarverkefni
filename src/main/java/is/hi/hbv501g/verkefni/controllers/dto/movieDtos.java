@@ -1,7 +1,7 @@
 package is.hi.hbv501g.verkefni.controllers.dto;
 
-public class movieDtos {
-    private movieDtos() {}
+public class MovieDtos {
+    private MovieDtos() {}
 
     // profilePictureBase64 holds the image as Base64 string in JSON responses
     public record MovieResponse(String genre, String moviePictureBase64) {}

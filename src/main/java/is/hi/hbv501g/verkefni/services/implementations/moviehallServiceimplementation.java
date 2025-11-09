@@ -1,9 +1,9 @@
 package is.hi.hbv501g.verkefni.services.implementations;
 
 
-import is.hi.hbv501g.verkefni.persistence.entities.movieHall;
-import is.hi.hbv501g.verkefni.persistence.repositories.movieHallRepository;
-import is.hi.hbv501g.verkefni.services.movieHallService;
+import is.hi.hbv501g.verkefni.persistence.entities.MovieHall;
+import is.hi.hbv501g.verkefni.persistence.repositories.MovieHallRepository;
+import is.hi.hbv501g.verkefni.services.MovieHallService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -11,13 +11,13 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class moviehallServiceimplementation implements movieHallService {
+public class MovieHallServiceimplementation implements MovieHallService {
 
-    private final movieHallRepository movieHallRepository;
+    private final MovieHallRepository movieHallRepository;
 
     @Override
-    public movieHall create(String name, String location) {
-        movieHall movieHall = is.hi.hbv501g.verkefni.persistence.entities.movieHall.builder()
+    public MovieHall create(String name, String location) {
+        MovieHall movieHall = is.hi.hbv501g.verkefni.persistence.entities.MovieHall.builder()
                 .name(name)
                 .location(location)
                 .nowShowing(false)
@@ -26,8 +26,8 @@ public class moviehallServiceimplementation implements movieHallService {
     }
 
     @Override
-    public movieHall update(Long movieHallId, String name, String location, Boolean nowShowing){
-        movieHall movieHall = movieHallRepository.findById(movieHallId)
+    public MovieHall update(Long movieHallId, String name, String location, Boolean nowShowing){
+        MovieHall movieHall = movieHallRepository.findById(movieHallId)
                 .orElseThrow(() ->  new IllegalArgumentException("MovieHall not found"));
         movieHall.setName(name);
         movieHall.setLocation(location);
@@ -40,23 +40,23 @@ public class moviehallServiceimplementation implements movieHallService {
     }
 
     @Override
-    public List<movieHall> listNowPlaying(){
+    public List<MovieHall> listNowPlaying(){
         return movieHallRepository.findByNowShowingTrue();
     }
 
     @Override
-    public List<movieHall> listMovieHalls() {
+    public List<MovieHall> listMovieHalls() {
         return movieHallRepository.findAll();
     }
 
     @Override
-    public movieHall getMovieHallById(Long movieHallId) {
+    public MovieHall getMovieHallById(Long movieHallId) {
         return movieHallRepository.findById(movieHallId)
                 .orElseThrow(() -> new IllegalArgumentException("Moviehall not found"));
     }
 
     @Override
-    public List<movieHall> filterMovieHalls(String name, String location) {
+    public List<MovieHall> filterMovieHalls(String name, String location) {
         return movieHallRepository.findAll().stream()
                 .filter(m -> name == null || m.getName().toLowerCase().contains(name.toLowerCase()))
                 .filter(m -> location == null || m.getLocation().equalsIgnoreCase(location))

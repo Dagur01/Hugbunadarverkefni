@@ -1,13 +1,12 @@
 package is.hi.hbv501g.verkefni.controllers.dto;
 
-public class bookingCreateDtos {
+public class BookingCreateDtos {
     private Long movieId;
     private Long hallId;
     private Long seatId;
-
     private Long screeningId;
+    private String discountCode;
 
-    // Getters & setters
     public Long getMovieId() { return movieId; }
     public void setMovieId(Long movieId) { this.movieId = movieId; }
 
@@ -17,11 +16,10 @@ public class bookingCreateDtos {
     public Long getSeatId() { return seatId; }
     public void setSeatId(Long seatId) { this.seatId = seatId; }
 
-    public Long getScreeningId() {
-        return screeningId;
-    }
+    public Long getScreeningId() { return screeningId; }
+    public void setScreeningId(Long screeningId) { this.screeningId = screeningId; }
 
-    public void setScreeningId(Long screeningId) {
-        this.screeningId = screeningId;
-    }
+    public String getDiscountCode() { return discountCode; }
+
+    public void setDiscountCode(String discountCode) { this.discountCode = discountCode; }
 }

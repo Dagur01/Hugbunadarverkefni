@@ -3,11 +3,11 @@ package is.hi.hbv501g.verkefni.controllers;
 
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import is.hi.hbv501g.verkefni.persistence.entities.movie;
-import is.hi.hbv501g.verkefni.persistence.entities.user;
-import is.hi.hbv501g.verkefni.persistence.repositories.movieRepository;
-import is.hi.hbv501g.verkefni.persistence.repositories.userRepository;
-import is.hi.hbv501g.verkefni.security.jwtService;
+import is.hi.hbv501g.verkefni.persistence.entities.Movie;
+import is.hi.hbv501g.verkefni.persistence.entities.User;
+import is.hi.hbv501g.verkefni.persistence.repositories.MovieRepository;
+import is.hi.hbv501g.verkefni.persistence.repositories.UserRepository;
+import is.hi.hbv501g.verkefni.security.JwtService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -16,13 +16,13 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/favorites")
 public class FavoritesController {
     @Autowired
-    private userRepository userRepository;
+    private UserRepository userRepository;
 
     @Autowired
-    private movieRepository movieRepository;
+    private MovieRepository movieRepository;
 
     @Autowired
-    private jwtService jwtService;
+    private JwtService jwtService;
 
     // 🔹 Add a favorite movie
     @PostMapping("/{movieId}")
@@ -40,10 +40,10 @@ public class FavoritesController {
         }
 
         String email = jwtService.extractEmail(token);
-        user user = userRepository.findByEmail(email).orElse(null);
+        User user = userRepository.findByEmail(email).orElse(null);
         if (user == null) return ResponseEntity.status(404).body("User not found");
 
-        movie movie = movieRepository.findById(movieId).orElse(null);
+        Movie movie = movieRepository.findById(movieId).orElse(null);
         if (movie == null) return ResponseEntity.status(404).body("Movie not found");
 
         // Check if already favorite
@@ -73,10 +73,10 @@ public class FavoritesController {
         }
 
         String email = jwtService.extractEmail(token);
-        user user = userRepository.findByEmail(email).orElse(null);
+        User user = userRepository.findByEmail(email).orElse(null);
         if (user == null) return ResponseEntity.status(404).body("User not found");
 
-        movie movie = movieRepository.findById(movieId).orElse(null);
+        Movie movie = movieRepository.findById(movieId).orElse(null);
         if (movie == null) return ResponseEntity.status(404).body("Movie not found");
 
         if (!user.getFavoriteMovies().contains(movie)) {
@@ -102,7 +102,7 @@ public class FavoritesController {
         }
 
         String email = jwtService.extractEmail(token);
-        user user = userRepository.findByEmail(email).orElse(null);
+        User user = userRepository.findByEmail(email).orElse(null);
         if (user == null) return ResponseEntity.status(404).body("User not found");
 
         return ResponseEntity.ok(user.getFavoriteMovies());

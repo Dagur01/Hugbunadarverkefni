@@ -1,6 +1,6 @@
 package is.hi.hbv501g.verkefni.controllers.dto;
 
-public class movieHallCreate {
+public class MovieHallCreate {
 
     public record MovieHallCreateRequest(
             String name,

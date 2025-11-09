@@ -1,37 +1,72 @@
 package is.hi.hbv501g.verkefni.persistence.entities;
+
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.time.LocalDateTime;
 @Entity
 @Getter
 @Setter
-public class booking {
+public class Booking {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long bookingid;
 
     @ManyToOne
     @JoinColumn(name = "movie_id", nullable = false)
-    private movie movie;
+    private Movie movie;
 
     @ManyToOne
     @JoinColumn(name = "hall_id", nullable = false)
-    private movieHall movieHall;
+    private MovieHall movieHall;
 
     @ManyToOne
     @JoinColumn(name = "seat_id", nullable = false)
-    private seat seat;
+    private Seat seat;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
-    private user user;
+    private User user;
 
     @ManyToOne
     @JoinColumn(name = "screening_id", nullable = false)
-    private screening screening;
+    private Screening screening;
 
-    public booking() {}
+    @Column
+    private String discountCode;
 
+    @Column
+    private Integer discountPercent;
+
+    public Booking() {
+    }
+
+    // Fixed setters - they now actually set the values!
+    public void setMovie(Movie movie) {
+        this.movie = movie;
+    }
+
+    public void setMovieHall(MovieHall movieHall) {
+        this.movieHall = movieHall;
+    }
+
+    public void setSeat(Seat seat) {
+        this.seat = seat;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public void setScreening(Screening screening) {
+        this.screening = screening;
+    }
+
+    public void setDiscountCode(String discountCode) {
+        this.discountCode = discountCode;
+    }
+
+    public void setDiscountPercent(Integer discountPercent) {
+        this.discountPercent = discountPercent;
+    }
 }

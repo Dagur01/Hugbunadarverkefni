@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class friendRequest {
+public class FriendRequest {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,11 +23,11 @@ public class friendRequest {
 
     @ManyToOne(optional = false)
     @JoinColumn(name = "from_user_id")
-    private user fromUser;
+    private User fromUser;
 
     @ManyToOne(optional = false)
     @JoinColumn(name = "to_user_id")
-    private user toUser;
+    private User toUser;
 
     @Column(nullable = false)
     private String status; // PENDING, ACCEPTED, REJECTED

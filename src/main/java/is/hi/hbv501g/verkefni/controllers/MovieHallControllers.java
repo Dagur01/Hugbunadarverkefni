@@ -1,12 +1,12 @@
 package is.hi.hbv501g.verkefni.controllers;
 
 
-import is.hi.hbv501g.verkefni.controllers.dto.mMovieHallUpdate;
-import is.hi.hbv501g.verkefni.controllers.dto.movieHallCreate;
-import is.hi.hbv501g.verkefni.persistence.entities.movieHall;
-import is.hi.hbv501g.verkefni.persistence.repositories.movieHallRepository;
-import is.hi.hbv501g.verkefni.security.jwtService;
-import is.hi.hbv501g.verkefni.services.movieHallService;
+import is.hi.hbv501g.verkefni.controllers.dto.MovieHallUpdate;
+import is.hi.hbv501g.verkefni.controllers.dto.MovieHallCreate;
+import is.hi.hbv501g.verkefni.persistence.entities.MovieHall;
+import is.hi.hbv501g.verkefni.persistence.repositories.MovieHallRepository;
+import is.hi.hbv501g.verkefni.security.JwtService;
+import is.hi.hbv501g.verkefni.services.MovieHallService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -21,8 +21,8 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class MovieHallControllers {
 
-    private final movieHallService movieHallService;
-    private final jwtService jwtService;
+    private final MovieHallService movieHallService;
+    private final JwtService jwtService;
 
     @GetMapping(path = "/now-playing", produces = "application/json")
     public ResponseEntity<?> listNowPlaying() {
@@ -40,19 +40,19 @@ public class MovieHallControllers {
     }
 
     @GetMapping(path = "/movieHalls", produces = "application/json")
-    public List<movieHall> listMovieHalls() {
+    public List<MovieHall> listMovieHalls() {
         return movieHallService.listMovieHalls();
     }
 
     @GetMapping(path = "/movieHalls/filter", produces = "application/json")
-    public List<movieHall> filterMovieHalls(String name, String location) {
+    public List<MovieHall> filterMovieHalls(String name, String location) {
         return movieHallService.filterMovieHalls(name, location);
     }
 
     // admin - create
     @PostMapping(path = "/movieHalls", consumes = "application/json", produces = "application/json")
     public ResponseEntity<?> create(@RequestHeader("Authorization") String authHeader,
-                                    @RequestBody movieHallCreate.MovieHallCreateRequest req) {
+                                    @RequestBody MovieHallCreate.MovieHallCreateRequest req) {
         if (authHeader == null || authHeader.isBlank()) {
             return ResponseEntity.status(401).body("Missing Authorization header");
         }
@@ -65,7 +65,7 @@ public class MovieHallControllers {
         }
 
         try {
-            movieHall created = movieHallService.create(req.name(), req.location());
+            MovieHall created = movieHallService.create(req.name(), req.location());
             return ResponseEntity.ok(created);
         } catch (Exception e) {
             return ResponseEntity.status(500).body(
@@ -80,7 +80,7 @@ public class MovieHallControllers {
     @PatchMapping(path = "/movieHalls/{movieHallId}", consumes = "application/json", produces = "application/json")
     public ResponseEntity<?> update(@RequestHeader("Authorization") String authHeader,
                                     @PathVariable Long movieHallId,
-                                    @RequestBody mMovieHallUpdate.MovieHallUpdateRequest req) {
+                                    @RequestBody MovieHallUpdate.MovieHallUpdateRequest req) {
         if (authHeader == null || authHeader.isBlank()) {
             return ResponseEntity.status(401).body("Missing Authorization header");
         }
@@ -93,7 +93,7 @@ public class MovieHallControllers {
         }
 
         try {
-            movieHall updated = movieHallService.update(movieHallId, req.name(), req.location(), req.nowShowing());
+            MovieHall updated = movieHallService.update(movieHallId, req.name(), req.location(), req.nowShowing());
             return ResponseEntity.ok(updated);
         } catch (Exception e) {
             return ResponseEntity.status(500).body(

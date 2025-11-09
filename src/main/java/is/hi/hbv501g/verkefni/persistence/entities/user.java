@@ -3,14 +3,9 @@ package is.hi.hbv501g.verkefni.persistence.entities;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.*;
+
 import java.util.HashSet;
 import java.util.Set;
-import jakarta.persistence.ManyToMany;
-import jakarta.persistence.JoinTable;
-import jakarta.persistence.JoinColumn;
-import org.springframework.boot.context.properties.bind.DefaultValue;
-
-import static org.hibernate.cfg.JdbcSettings.USER;
 
 
 @Entity
@@ -21,7 +16,7 @@ import static org.hibernate.cfg.JdbcSettings.USER;
 @AllArgsConstructor
 @Builder
 @JsonIgnoreProperties({"passwordHash", "profilePicture", "profilePictureContentType"})
-public class user {
+public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -54,21 +49,19 @@ public class user {
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "movie_id")
     )
-    private Set<movie> favoriteMovies = new HashSet<>();
+    private Set<Movie> favoriteMovies = new HashSet<>();
 
-    public Set<movie> getFavoriteMovies() {
+    public Set<Movie> getFavoriteMovies() {
         return favoriteMovies;
     }
 
-    public void addFavoriteMovie(movie movie) {
+    public void addFavoriteMovie(Movie movie) {
         favoriteMovies.add(movie);
     }
 
-    public void removeFavoriteMovie(movie movie) {
+    public void removeFavoriteMovie(Movie movie) {
         favoriteMovies.remove(movie);
     }
-
-
 
 
 }

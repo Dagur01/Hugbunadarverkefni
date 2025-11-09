@@ -2,9 +2,9 @@ package is.hi.hbv501g.verkefni.controllers;
 
 
 import is.hi.hbv501g.verkefni.controllers.dto.ProfileDto;
-import is.hi.hbv501g.verkefni.persistence.entities.friendRequest;
-import is.hi.hbv501g.verkefni.security.jwtService;
-import is.hi.hbv501g.verkefni.services.friendService;
+import is.hi.hbv501g.verkefni.persistence.entities.FriendRequest;
+import is.hi.hbv501g.verkefni.security.JwtService;
+import is.hi.hbv501g.verkefni.services.FriendService;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,12 +16,12 @@ import java.util.NoSuchElementException;
 
 @RestController
 @RequiredArgsConstructor
-public class friendController {
+public class FriendController {
 
-    private static final Logger log = LoggerFactory.getLogger(friendController.class);
+    private static final Logger log = LoggerFactory.getLogger(FriendController.class);
 
-    private final friendService friendService;
-    private final jwtService jwtService;
+    private final FriendService friendService;
+    private final JwtService jwtService;
 
     private String extractToken(String authHeader) {
         if (authHeader == null || !authHeader.startsWith("Bearer ")) return null;
@@ -45,7 +45,7 @@ public class friendController {
 
         try {
             // Ensure your friendService.sendRequest accepts emails (fromEmail, toEmail)
-            friendRequest fr = friendService.sendRequest(fromEmail, toEmail);
+            FriendRequest fr = friendService.sendRequest(fromEmail, toEmail);
             return ResponseEntity.ok(fr);
         } catch (NoSuchElementException nse) {
             // service couldn't find sender or target -> return 404 with clear message
@@ -65,7 +65,7 @@ public class friendController {
         String actingEmail = jwtService.extractEmail(token);
 
         try {
-            friendRequest fr = friendService.acceptRequest(id, actingEmail);
+            FriendRequest fr = friendService.acceptRequest(id, actingEmail);
             return ResponseEntity.ok(fr);
         } catch (SecurityException se) {
             return ResponseEntity.status(403).body(se.getMessage());
@@ -82,7 +82,7 @@ public class friendController {
         String acting = jwtService.extractEmail(token);
 
         try {
-            friendRequest fr = friendService.rejectRequest(id, acting);
+            FriendRequest fr = friendService.rejectRequest(id, acting);
             return ResponseEntity.ok(fr);
         } catch (SecurityException se) {
             return ResponseEntity.status(403).body(se.getMessage());

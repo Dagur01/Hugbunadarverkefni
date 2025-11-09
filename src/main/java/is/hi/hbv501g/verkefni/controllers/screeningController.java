@@ -1,8 +1,8 @@
 package is.hi.hbv501g.verkefni.controllers;
 
 
-import is.hi.hbv501g.verkefni.persistence.entities.screening;
-import is.hi.hbv501g.verkefni.persistence.repositories.screeningRepository;
+import is.hi.hbv501g.verkefni.persistence.entities.Screening;
+import is.hi.hbv501g.verkefni.persistence.repositories.ScreeningRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
@@ -13,10 +13,10 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/screenings")
-public class screeningController {
+public class ScreeningController {
 
     @Autowired
-    private screeningRepository screeningRepository;
+    private ScreeningRepository screeningRepository;
 
     // Bæta við nýjum sýningartíma
     @PostMapping
@@ -24,14 +24,14 @@ public class screeningController {
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
             LocalDateTime screeningTime
     ) {
-        screening screening = new screening(screeningTime);
+        Screening screening = new Screening(screeningTime);
         screeningRepository.save(screening);
         return ResponseEntity.ok("Screening time added successfully");
     }
 
     // Sækja alla sýningartíma
     @GetMapping
-    public List<screening> getAllScreenings() {
+    public List<Screening> getAllScreenings() {
         return screeningRepository.findAll();
     }
 }

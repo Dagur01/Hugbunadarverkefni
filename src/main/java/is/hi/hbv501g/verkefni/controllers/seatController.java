@@ -1,8 +1,8 @@
 package is.hi.hbv501g.verkefni.controllers;
-import is.hi.hbv501g.verkefni.persistence.entities.movieHall;
-import is.hi.hbv501g.verkefni.persistence.entities.seat;
-import is.hi.hbv501g.verkefni.persistence.repositories.movieHallRepository;
-import is.hi.hbv501g.verkefni.persistence.repositories.seatRepository;
+import is.hi.hbv501g.verkefni.persistence.entities.MovieHall;
+import is.hi.hbv501g.verkefni.persistence.entities.Seat;
+import is.hi.hbv501g.verkefni.persistence.repositories.MovieHallRepository;
+import is.hi.hbv501g.verkefni.persistence.repositories.SeatRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -12,12 +12,12 @@ import java.util.List;
 @RestController
 @RequestMapping("/seats")
 
-public class seatController {
+public class SeatController {
     @Autowired
-    private seatRepository seatRepository;
+    private SeatRepository seatRepository;
 
     @Autowired
-    private movieHallRepository movieHallRepository;
+    private MovieHallRepository movieHallRepository;
 
     // Bæta við sæti í ákveðinn sal
     @PostMapping("/add")
@@ -26,12 +26,12 @@ public class seatController {
                                      @RequestParam int seatNumber,
                                      @RequestParam Integer price) {
 
-        movieHall hall = movieHallRepository.findById(hallId).orElse(null);
+        MovieHall hall = movieHallRepository.findById(hallId).orElse(null);
         if (hall == null) {
             return ResponseEntity.status(404).body("Movie hall not found");
         }
 
-        seat seat = new seat(rowNumber, seatNumber, hall, price);
+        Seat seat = new Seat(rowNumber, seatNumber, hall, price);
         seatRepository.save(seat);
 
         return ResponseEntity.ok("Seat added successfully");
@@ -40,12 +40,12 @@ public class seatController {
     // Fá öll sæti í ákveðnum sal
     @GetMapping("/hall/{hallId}")
     public ResponseEntity<?> getSeatsByHall(@PathVariable Long hallId) {
-        movieHall hall = movieHallRepository.findById(hallId).orElse(null);
+        MovieHall hall = movieHallRepository.findById(hallId).orElse(null);
         if (hall == null) {
             return ResponseEntity.status(404).body("Movie hall not found");
         }
 
-        List<seat> seats = seatRepository.findAllByMovieHall(hall);
+        List<Seat> seats = seatRepository.findAllByMovieHall(hall);
         return ResponseEntity.ok(seats);
     }
 
@@ -53,7 +53,7 @@ public class seatController {
     @PatchMapping("/{seatId}/status")
     public ResponseEntity<?> updateSeatStatus(@PathVariable Long seatId,
                                               @RequestParam boolean booked) {
-        seat seat = seatRepository.findById(seatId).orElse(null);
+        Seat seat = seatRepository.findById(seatId).orElse(null);
         if (seat == null) {
             return ResponseEntity.status(404).body("Seat not found");
         }

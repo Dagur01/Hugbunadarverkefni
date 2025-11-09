@@ -1,6 +1,6 @@
 package is.hi.hbv501g.verkefni.services;
 
-public interface signUpService {
+public interface SignUpService {
     boolean signUp(String email, String password);
     void authentication(String email, String password);
     boolean isemailfree(String email);

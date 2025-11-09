@@ -1,11 +1,11 @@
 package is.hi.hbv501g.verkefni.services.implementations;
 
 import is.hi.hbv501g.verkefni.controllers.dto.ProfileDto;
-import is.hi.hbv501g.verkefni.persistence.entities.friendRequest;
-import is.hi.hbv501g.verkefni.persistence.entities.user;
-import is.hi.hbv501g.verkefni.persistence.repositories.friendRequestRepository;
-import is.hi.hbv501g.verkefni.persistence.repositories.userRepository;
-import is.hi.hbv501g.verkefni.services.friendService;
+import is.hi.hbv501g.verkefni.persistence.entities.FriendRequest;
+import is.hi.hbv501g.verkefni.persistence.entities.User;
+import is.hi.hbv501g.verkefni.persistence.repositories.FriendRequestRepository;
+import is.hi.hbv501g.verkefni.persistence.repositories.UserRepository;
+import is.hi.hbv501g.verkefni.services.FriendService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -17,36 +17,36 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-public class friendServiceImpl implements friendService {
+public class FriendServiceImpl implements FriendService {
 
-    private final userRepository userRepository;
-    private final friendRequestRepository friendRequestRepository;
+    private final UserRepository userRepository;
+    private final FriendRequestRepository friendRequestRepository;
 
     @Override
-    public friendRequest sendRequest(String fromEmail, String toEmail) {
+    public FriendRequest sendRequest(String fromEmail, String toEmail) {
         if (fromEmail.equalsIgnoreCase(toEmail)) {
             throw new IllegalArgumentException("Cannot send friend request to yourself");
         }
-        user from = userRepository.findByEmail(fromEmail)
+        User from = userRepository.findByEmail(fromEmail)
                 .orElseThrow(() -> new NoSuchElementException("Sender not found"));
-        user to = userRepository.findByEmail(toEmail)
+        User to = userRepository.findByEmail(toEmail)
                 .orElseThrow(() -> new NoSuchElementException("Target user not found"));
 
         // If already friends (accepted request exists)
-        Optional<friendRequest> existingAccepted = friendRequestRepository.findByFromUserAndToUserAndStatus(from, to, "ACCEPTED")
+        Optional<FriendRequest> existingAccepted = friendRequestRepository.findByFromUserAndToUserAndStatus(from, to, "ACCEPTED")
                 .or(() -> friendRequestRepository.findByFromUserAndToUserAndStatus(to, from, "ACCEPTED"));
         if (existingAccepted.isPresent()) {
             throw new IllegalStateException("Already friends");
         }
 
         // If pending request exists in either direction, return/throw
-        Optional<friendRequest> existingPending1 = friendRequestRepository.findByFromUserAndToUserAndStatus(from, to, "PENDING");
-        Optional<friendRequest> existingPending2 = friendRequestRepository.findByFromUserAndToUserAndStatus(to, from, "PENDING");
+        Optional<FriendRequest> existingPending1 = friendRequestRepository.findByFromUserAndToUserAndStatus(from, to, "PENDING");
+        Optional<FriendRequest> existingPending2 = friendRequestRepository.findByFromUserAndToUserAndStatus(to, from, "PENDING");
         if (existingPending1.isPresent() || existingPending2.isPresent()) {
             throw new IllegalStateException("Friend request already pending");
         }
 
-        friendRequest fr = friendRequest.builder()
+        FriendRequest fr = FriendRequest.builder()
                 .fromUser(from)
                 .toUser(to)
                 .status("PENDING")
@@ -57,8 +57,8 @@ public class friendServiceImpl implements friendService {
     }
 
     @Override
-    public friendRequest acceptRequest(Long requestId, String actingEmail) {
-        friendRequest fr = friendRequestRepository.findById(requestId)
+    public FriendRequest acceptRequest(Long requestId, String actingEmail) {
+        FriendRequest fr = friendRequestRepository.findById(requestId)
                 .orElseThrow(() -> new NoSuchElementException("Friend request not found"));
         if (!fr.getToUser().getEmail().equalsIgnoreCase(actingEmail)) {
             throw new SecurityException("Only the recipient can accept the request");
@@ -71,8 +71,8 @@ public class friendServiceImpl implements friendService {
     }
 
     @Override
-    public friendRequest rejectRequest(Long requestId, String actingEmail) {
-        friendRequest fr = friendRequestRepository.findById(requestId)
+    public FriendRequest rejectRequest(Long requestId, String actingEmail) {
+        FriendRequest fr = friendRequestRepository.findById(requestId)
                 .orElseThrow(() -> new NoSuchElementException("Friend request not found"));
         if (!fr.getToUser().getEmail().equalsIgnoreCase(actingEmail)) {
             throw new SecurityException("Only the recipient can reject the request");
@@ -84,11 +84,12 @@ public class friendServiceImpl implements friendService {
         return friendRequestRepository.save(fr);
     }
 
+
     @Override
     public List<String> listFriendsUsernames(String email) {
-        user u = userRepository.findByEmail(email)
+        User u = userRepository.findByEmail(email)
                 .orElseThrow(() -> new NoSuchElementException("User not found"));
-        List<friendRequest> accepted = friendRequestRepository.findByFromUserOrToUserAndStatus(u, u, "ACCEPTED");
+        List<FriendRequest> accepted = friendRequestRepository.findByFromUserOrToUserAndStatus(u, u, "ACCEPTED");
         return accepted.stream()
                 .map(fr -> fr.getFromUser().getUserId() == (u.getUserId()) ? fr.getToUser().getUsername() : fr.getFromUser().getUsername())
                 .distinct()
@@ -97,7 +98,7 @@ public class friendServiceImpl implements friendService {
 
     @Override
     public ProfileDto getProfile(String username, String viewerUsername) {
-        user u = userRepository.findByUsername(username)
+        User u = userRepository.findByUsername(username)
                 .orElseThrow(() -> new NoSuchElementException("User not found"));
 
         List<String> friends = listFriendsUsernames(username);

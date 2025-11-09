@@ -1,12 +1,12 @@
 package is.hi.hbv501g.verkefni.controllers;
 
 
-import is.hi.hbv501g.verkefni.controllers.dto.movieCreate;
-import is.hi.hbv501g.verkefni.controllers.dto.mMovieUpdate;
-import is.hi.hbv501g.verkefni.persistence.entities.movie;
-import is.hi.hbv501g.verkefni.persistence.repositories.movieRepository;
-import is.hi.hbv501g.verkefni.security.jwtService;
-import is.hi.hbv501g.verkefni.services.movieService;
+import is.hi.hbv501g.verkefni.controllers.dto.MovieCreate;
+import is.hi.hbv501g.verkefni.controllers.dto.MovieUpdate;
+import is.hi.hbv501g.verkefni.persistence.entities.Movie;
+import is.hi.hbv501g.verkefni.persistence.repositories.MovieRepository;
+import is.hi.hbv501g.verkefni.security.JwtService;
+import is.hi.hbv501g.verkefni.services.MovieService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -19,11 +19,11 @@ import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
-public class movieController {
+public class MovieController {
 
-    private final movieService movieService;
-    private final jwtService jwtService;
-    private final movieRepository movieRepository;
+    private final MovieService movieService;
+    private final JwtService jwtService;
+    private final MovieRepository movieRepository;
 
     @GetMapping(path = "/", produces = "application/json")
     public ResponseEntity<?> listNowPlaying() {
@@ -41,12 +41,12 @@ public class movieController {
     }
 
     @GetMapping(path = "/movies", produces = "application/json")
-    public List<movie> listMovies() {
+    public List<Movie> listMovies() {
         return movieService.listMovies();
     }
 
     @GetMapping(path = "/movies/filter", produces = "application/json")
-    public List<movie> filterMovies(String movieTitle, String genre, Integer ageRating, Long duration) {
+    public List<Movie> filterMovies(String movieTitle, String genre, Integer ageRating, Long duration) {
         return movieService.filterMovies(movieTitle, genre, ageRating, duration);
     }
 
@@ -66,14 +66,14 @@ public class movieController {
     }
 
     @GetMapping(path = "/movies/genre/{genre}", produces = "application/json")
-    public List<movie> getMoviesByGenre(@PathVariable String genre) {
+    public List<Movie> getMoviesByGenre(@PathVariable String genre) {
         return movieService.getMoviesByGenre(genre);
     }
 
     // admin - create
     @PostMapping(path = "/movies", consumes = "application/json", produces = "application/json")
     public ResponseEntity<?> create(@RequestHeader("Authorization") String authHeader,
-                                    @RequestBody movieCreate.MovieCreateRequest req) {
+                                    @RequestBody MovieCreate.MovieCreateRequest req) {
         if (authHeader == null || authHeader.isBlank()) {
             return ResponseEntity.status(401).body("Missing Authorization header");
         }
@@ -86,7 +86,7 @@ public class movieController {
         }
 
         try {
-            movie created = movieService.create(req.title(), req.genre(), req.ageRating(), req.duration());
+            Movie created = movieService.create(req.title(), req.genre(), req.ageRating(), req.duration());
             return ResponseEntity.ok(created);
         } catch (Exception e) {
             return ResponseEntity.status(500).body(
@@ -100,7 +100,7 @@ public class movieController {
     @PatchMapping(path = "/movies/{movieId}", consumes = "application/json", produces = "application/json")
     public ResponseEntity<?> update(@RequestHeader("Authorization") String authHeader,
                                     @PathVariable Long movieId,
-                                    @RequestBody mMovieUpdate.MovieUpdateRequest req) {
+                                    @RequestBody MovieUpdate.MovieUpdateRequest req) {
         if (authHeader == null || authHeader.isBlank()) {
             return ResponseEntity.status(401).body("Missing Authorization header");
         }
@@ -113,7 +113,7 @@ public class movieController {
         }
 
         try {
-            movie updated = movieService.update(movieId, req.title(), req.genre(), req.ageRating(), req.duration(), req.nowShowing());
+            Movie updated = movieService.update(movieId, req.title(), req.genre(), req.ageRating(), req.duration(), req.nowShowing());
             return ResponseEntity.ok(updated);
         } catch (Exception e) {
             return ResponseEntity.status(500).body(

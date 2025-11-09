@@ -2,18 +2,18 @@ package is.hi.hbv501g.verkefni.services.implementations;
 
 
 
-import is.hi.hbv501g.verkefni.persistence.entities.user;
-import is.hi.hbv501g.verkefni.persistence.repositories.userRepository;
-import is.hi.hbv501g.verkefni.services.signUpService;
+import is.hi.hbv501g.verkefni.persistence.entities.User;
+import is.hi.hbv501g.verkefni.persistence.repositories.UserRepository;
+import is.hi.hbv501g.verkefni.services.SignUpService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class signUpServiceImplementation implements signUpService {
+public class SignUpServiceImplementation implements SignUpService {
 
-    private final userRepository userRepository;
+    private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
 
@@ -23,10 +23,10 @@ public class signUpServiceImplementation implements signUpService {
         if (!isemailfree(email) || !isPasswordLegal(password)) {
             return false;
         }
-        user user = is.hi.hbv501g.verkefni.persistence.entities.user.builder()
+        User user = is.hi.hbv501g.verkefni.persistence.entities.User.builder()
                 .email(email)
                 .passwordHash(passwordEncoder.encode(password))
-                .role(is.hi.hbv501g.verkefni.persistence.entities.user.Role.USER)
+                .role(is.hi.hbv501g.verkefni.persistence.entities.User.Role.USER)
                 .build();
         userRepository.save(user);
         return true;

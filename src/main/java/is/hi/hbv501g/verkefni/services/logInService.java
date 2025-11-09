@@ -1,6 +1,6 @@
 package is.hi.hbv501g.verkefni.services;
 
-public interface logInService {
+public interface LogInService {
     boolean login(String email, String password);
     void logout(Long userId);
     boolean validUser(boolean doesUserExist);

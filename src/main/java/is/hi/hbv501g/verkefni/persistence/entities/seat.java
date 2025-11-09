@@ -9,7 +9,7 @@ import lombok.Setter;
 @Getter
 @Setter
 
-public class seat {
+public class Seat {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long seatId;
@@ -23,11 +23,11 @@ public class seat {
     @ManyToOne
     @JoinColumn(name = "hall_id")
     @JsonBackReference
-    private movieHall movieHall;
+    private MovieHall movieHall;
 
-    public seat() {}
+    public Seat() {}
 
-    public seat(int rowNumber, int seatNumber, movieHall movieHall, Integer price) {
+    public Seat(int rowNumber, int seatNumber, MovieHall movieHall, Integer price) {
         this.rowNumber = rowNumber;
         this.seatNumber = seatNumber;
         this.price = price;

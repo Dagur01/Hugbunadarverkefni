@@ -1,28 +1,43 @@
 package is.hi.hbv501g.verkefni.controllers;
-import is.hi.hbv501g.verkefni.security.jwtService;
-import org.springframework.web.bind.annotation.*;
-import is.hi.hbv501g.verkefni.controllers.dto.bookingCreateDtos;
-import is.hi.hbv501g.verkefni.persistence.entities.*;
+
+import is.hi.hbv501g.verkefni.controllers.dto.BookingCreateDtos;
+import is.hi.hbv501g.verkefni.persistence.entities.Booking;
 import is.hi.hbv501g.verkefni.persistence.repositories.*;
+import is.hi.hbv501g.verkefni.security.JwtService;
+import is.hi.hbv501g.verkefni.services.DiscountService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 
 @RestController
 @RequestMapping("/bookings")
-public class bookingController {
-    @Autowired private movieRepository movieRepository;
-    @Autowired private movieHallRepository movieHallRepository;
-    @Autowired private seatRepository seatRepository;
-    @Autowired private bookingRepository bookingRepository;
-    @Autowired private userRepository userRepository;
-    @Autowired private screeningRepository screeningRepository;
-    @Autowired private jwtService jwtService;
+public class BookingController {
+    @Autowired
+    private MovieRepository movieRepository;
+    @Autowired
+    private MovieHallRepository movieHallRepository;
+    @Autowired
+    private SeatRepository seatRepository;
+    @Autowired
+    private BookingRepository bookingRepository;
+    @Autowired
+    private UserRepository userRepository;
+    @Autowired
+    private ScreeningRepository screeningRepository;
+    @Autowired
+    private JwtService jwtService;
+    @Autowired
+    private DiscountService discountService;
+    private static final Logger log = LoggerFactory.getLogger(BookingController.class);
+
 
     @PostMapping
     public ResponseEntity<?> createBooking(
             @RequestHeader("Authorization") String authHeader,
-            @RequestBody bookingCreateDtos dto
+            @RequestBody BookingCreateDtos dto
     ) {
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             return ResponseEntity.status(401).body("Missing or invalid Authorization header");
@@ -49,19 +64,43 @@ public class bookingController {
         var screening = screeningRepository.findById(dto.getScreeningId()).orElse(null);
         if (screening == null) return ResponseEntity.status(404).body("Screening not found");
 
-        boolean seatTaken = bookingRepository.existsBySeat(seat);
+        boolean seatTaken = bookingRepository.existsBySeatAndScreening(seat, screening);
         if (seatTaken) return ResponseEntity.status(409).body("Seat already booked");
 
-        booking booking = new booking();
+        Integer discountPercent = null;
+        String normalizedCode = null;
+
+        if (dto.getDiscountCode() != null && !dto.getDiscountCode().isBlank()) {
+            try {
+                var discount = discountService.validateAndUseCode(dto.getDiscountCode());
+                discountPercent = discount.getPercentage();
+                normalizedCode = discount.getCode();
+            } catch (IllegalArgumentException ex) {
+                return ResponseEntity.badRequest().body(ex.getMessage());
+            }
+        }
+
+        Booking booking = new Booking();
         booking.setMovie(movie);
         booking.setMovieHall(hall);
         booking.setSeat(seat);
         booking.setUser(user);
         booking.setScreening(screening);
-
+        booking.setDiscountCode(normalizedCode);
+        booking.setDiscountPercent(discountPercent);
         bookingRepository.save(booking);
+        String timeText = screening.getScreeningTime().toString(); // or the formatter shown above
+
+        String discountText = "";
+        if (normalizedCode != null && discountPercent != null) {
+            discountText = " (code " + normalizedCode + ", " + discountPercent + "%)";
+        }
+
+        System.out.println("DTO code: '" + dto.getDiscountCode() + "'");
+        System.out.println("Applied code: " + normalizedCode + ", percent: " + discountPercent);
         return ResponseEntity.ok("Booking created successfully for " + user.getEmail() +
-                " at time " + screening.getScreeningTime());
+                " at time " + timeText + discountText
+        );
     }
 
     @DeleteMapping("/{bookingId}")
@@ -93,7 +132,7 @@ public class bookingController {
         }
 
         // 4️⃣ Athuga hvort user megi cancela
-        boolean isAdmin = user.getRole() == is.hi.hbv501g.verkefni.persistence.entities.user.Role.ADMIN;
+        boolean isAdmin = user.getRole() == is.hi.hbv501g.verkefni.persistence.entities.User.Role.ADMIN;
         boolean isOwner = booking.getUser().getUserId() == user.getUserId();
 
         if (!isAdmin && !isOwner) {
@@ -105,5 +144,4 @@ public class bookingController {
 
         return ResponseEntity.ok("Booking cancelled successfully by " + user.getEmail());
     }
-
 }
