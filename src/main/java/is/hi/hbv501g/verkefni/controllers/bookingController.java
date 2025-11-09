@@ -1,23 +1,36 @@
 package is.hi.hbv501g.verkefni.controllers;
-import is.hi.hbv501g.verkefni.security.jwtService;
-import org.springframework.web.bind.annotation.*;
+
 import is.hi.hbv501g.verkefni.controllers.dto.bookingCreateDtos;
-import is.hi.hbv501g.verkefni.persistence.entities.*;
-import is.hi.hbv501g.verkefni.persistence.repositories.*;
+import is.hi.hbv501g.verkefni.persistence.entities.booking;
+import is.hi.hbv501g.verkefni.services.DiscountService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 
 @RestController
 @RequestMapping("/bookings")
 public class bookingController {
-    @Autowired private movieRepository movieRepository;
-    @Autowired private movieHallRepository movieHallRepository;
-    @Autowired private seatRepository seatRepository;
-    @Autowired private bookingRepository bookingRepository;
-    @Autowired private userRepository userRepository;
-    @Autowired private screeningRepository screeningRepository;
-    @Autowired private jwtService jwtService;
+    @Autowired
+    private is.hi.hbv501g.verkefni.persistence.repositories.movieRepository movieRepository;
+    @Autowired
+    private is.hi.hbv501g.verkefni.persistence.repositories.movieHallRepository movieHallRepository;
+    @Autowired
+    private is.hi.hbv501g.verkefni.persistence.repositories.seatRepository seatRepository;
+    @Autowired
+    private is.hi.hbv501g.verkefni.persistence.repositories.bookingRepository bookingRepository;
+    @Autowired
+    private is.hi.hbv501g.verkefni.persistence.repositories.userRepository userRepository;
+    @Autowired
+    private is.hi.hbv501g.verkefni.persistence.repositories.screeningRepository screeningRepository;
+    @Autowired
+    private is.hi.hbv501g.verkefni.security.jwtService jwtService;
+    @Autowired
+    private DiscountService discountService;
+    private static final Logger log = LoggerFactory.getLogger(bookingController.class);
+
 
     @PostMapping
     public ResponseEntity<?> createBooking(
@@ -52,16 +65,40 @@ public class bookingController {
         boolean seatTaken = bookingRepository.existsBySeat(seat);
         if (seatTaken) return ResponseEntity.status(409).body("Seat already booked");
 
+        Integer discountPercent = null;
+        String normalizedCode = null;
+
+        if (dto.getDiscountCode() != null && !dto.getDiscountCode().isBlank()) {
+            try {
+                var discount = discountService.validateAndUseCode(dto.getDiscountCode());
+                discountPercent = discount.getPercentage();
+                normalizedCode = discount.getCode();
+            } catch (IllegalArgumentException ex) {
+                return ResponseEntity.badRequest().body(ex.getMessage());
+            }
+        }
+
         booking booking = new booking();
         booking.setMovie(movie);
         booking.setMovieHall(hall);
         booking.setSeat(seat);
         booking.setUser(user);
         booking.setScreening(screening);
-
+        booking.setDiscountCode(normalizedCode);
+        booking.setDiscountPercent(discountPercent);
         bookingRepository.save(booking);
+        String timeText = screening.getScreeningTime().toString(); // or the formatter shown above
+
+        String discountText = "";
+        if (normalizedCode != null && discountPercent != null) {
+            discountText = " (code " + normalizedCode + ", " + discountPercent + "%)";
+        }
+
+        System.out.println("DTO code: '" + dto.getDiscountCode() + "'");
+        System.out.println("Applied code: " + normalizedCode + ", percent: " + discountPercent);
         return ResponseEntity.ok("Booking created successfully for " + user.getEmail() +
-                " at time " + screening.getScreeningTime());
+                " at time " + timeText + discountText
+        );
     }
 
     @DeleteMapping("/{bookingId}")
@@ -105,5 +142,4 @@ public class bookingController {
 
         return ResponseEntity.ok("Booking cancelled successfully by " + user.getEmail());
     }
-
 }
