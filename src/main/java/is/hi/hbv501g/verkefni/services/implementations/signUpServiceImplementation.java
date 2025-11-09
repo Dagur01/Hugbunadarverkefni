@@ -47,4 +47,5 @@ public class signUpServiceImplementation implements signUpService {
         return password != null && password.length() >= 8;
     }
 
+
 }

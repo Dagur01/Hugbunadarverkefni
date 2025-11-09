@@ -8,6 +8,9 @@ import java.util.Set;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.JoinColumn;
+import org.springframework.boot.context.properties.bind.DefaultValue;
+
+import static org.hibernate.cfg.JdbcSettings.USER;
 
 
 @Entity
@@ -42,7 +45,6 @@ public class user {
 
     @Column
     private String username;
-
 
     public enum Role {USER, ADMIN}
 

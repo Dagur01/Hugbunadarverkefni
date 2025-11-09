@@ -5,4 +5,5 @@ public interface signUpService {
     void authentication(String email, String password);
     boolean isemailfree(String email);
     boolean isPasswordLegal(String password);
+
 }

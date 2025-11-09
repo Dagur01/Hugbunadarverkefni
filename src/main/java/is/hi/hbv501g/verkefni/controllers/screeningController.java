@@ -18,7 +18,7 @@ public class screeningController {
     @Autowired
     private screeningRepository screeningRepository;
 
-    // ➕ Bæta við nýjum sýningartíma
+    // Bæta við nýjum sýningartíma
     @PostMapping
     public ResponseEntity<?> addScreening(
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
@@ -29,7 +29,7 @@ public class screeningController {
         return ResponseEntity.ok("Screening time added successfully");
     }
 
-    // 📜 Sækja alla sýningartíma
+    // Sækja alla sýningartíma
     @GetMapping
     public List<screening> getAllScreenings() {
         return screeningRepository.findAll();
