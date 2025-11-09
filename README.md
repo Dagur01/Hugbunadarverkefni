@@ -72,6 +72,62 @@ PATCH /auth/profile/picture - update user profile picture
 
 GET "/movies/filter" - filter movies by: <br>{String movieTitle, String genre, Integer ageRating, Long duration}
 
+### Use case 3: Invite friends to a movie
+
+POST "/friends/invite" {"email": "","movieId": 1}
+
+### Use case 5: Cancel booking
+
+DELETE /bookings/{bookingId} 
+
+### Use case 10: Delete account
+
+DELETE /profile/delete
+
+---
+
+### Use case 4: Apply discount code
+
+POST http://localhost:8080/bookings
+{
+"movieId": 1,
+"hallId": 1,
+"seatId": 5
+"Discount Code": "STUDENT20"
+}
+
+
+Sjá Discount kóða
+GET http://localhost:8080/discounts
+
+### Use case 6: Add friends
+
+POST /friends/request {"email": ""}
+
+Accept request 
+POST /friends/request/{id}/accept
+
+Reject request
+POST /friends/request/{id}/reject
+
+### Use case 12: Mark favorite movies
+
+Bæta við favorite
+POST http://localhost:8080/favorites/movie/1
+
+### Use case 13: Unmark favorite movies
+
+DELETE /favorites/{movieId}
+
+### Use case 14: View favorite movies
+
+fá favorite
+GET http://localhost:8080/favorites
+
+### Use case 18: View a friends profile
+
+GET /users/{username}/profile
+
 ---
 
 ## Other Endpoints
@@ -86,13 +142,6 @@ PATCH "/moviehalls/:id" - update a movie hall
 
 DELETE "/moviehalls/:id" - delete a movie hall
 
-POST http://localhost:8080/bookings
-{
-"movieId": 1,
-"hallId": 1,
-"seatId": 5
-"Discount Code": "STUDENT20"
-}
 
 GET http://localhost:8080/bookings
 
@@ -105,19 +154,15 @@ GET http://localhost:8080/seats/hall/1
 Bæta við sæti
 POST http://localhost:8080/seats/add?hallId=1&rowNumber=2&seatNumber=5&price=2500
 
-Bæta við favorite
-POST http://localhost:8080/favorites/movie/1
-
-fá favorite
-GET http://localhost:8080/favorites
-
 Bæta við screening
 POST http://localhost:8080/screenings?screeningTime=2025-10-14T20:00:00
 
 fá screening
 GET http://localhost:8080/screenings
 
-Sjá Discount kóða
-GET http://localhost:8080/discounts
+Fá sent invite
+GET /movies/invitations/sent
+
+
 
 
