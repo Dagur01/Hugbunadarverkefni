@@ -127,6 +127,8 @@ GET http://localhost:8080/favorites
 ### Use case 18: View a friends profile
 
 GET /users/{username}/profile
+Sjá vini
+GET freunds/list
 
 ---
 
