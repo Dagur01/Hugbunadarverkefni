@@ -29,9 +29,8 @@ public class bookingController {
     private is.hi.hbv501g.verkefni.security.jwtService jwtService;
     @Autowired
     private DiscountService discountService;
-    private static final Logger log = LoggerFactory.getLogger(bookingController.class);
 
-
+    
     @PostMapping
     public ResponseEntity<?> createBooking(
             @RequestHeader("Authorization") String authHeader,
@@ -101,12 +100,12 @@ public class bookingController {
         );
     }
 
+
     @DeleteMapping("/{bookingId}")
     public ResponseEntity<?> cancelBooking(
             @RequestHeader("Authorization") String authHeader,
             @PathVariable Long bookingId
     ) {
-        // 1️⃣ Athuga token
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             return ResponseEntity.status(401).body("Missing or invalid Authorization header");
         }
@@ -116,20 +115,20 @@ public class bookingController {
             return ResponseEntity.status(401).body("Invalid token");
         }
 
-        // 2️⃣ Finna user út frá token
+
         String email = jwtService.extractEmail(token);
         var user = userRepository.findByEmail(email).orElse(null);
         if (user == null) {
             return ResponseEntity.status(404).body("User not found");
         }
 
-        // 3️⃣ Finna bókunina
+
         var booking = bookingRepository.findById(bookingId).orElse(null);
         if (booking == null) {
             return ResponseEntity.status(404).body("Booking not found");
         }
 
-        // 4️⃣ Athuga hvort user megi cancela
+
         boolean isAdmin = user.getRole() == is.hi.hbv501g.verkefni.persistence.entities.user.Role.ADMIN;
         boolean isOwner = booking.getUser().getUserId() == user.getUserId();
 
@@ -137,7 +136,6 @@ public class bookingController {
             return ResponseEntity.status(403).body("You can only cancel your own bookings");
         }
 
-        // 5️⃣ Eyða bókun
         bookingRepository.delete(booking);
 
         return ResponseEntity.ok("Booking cancelled successfully by " + user.getEmail());

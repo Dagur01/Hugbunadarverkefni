@@ -6,7 +6,7 @@ import java.util.List;
 
 public interface DiscountService {
 
-    Discount createDiscount(String code, int percentage);
+    Discount createDiscount(String code, Integer percentage);
 
     Discount validateAndUseCode(String code) throws IllegalArgumentException;
 

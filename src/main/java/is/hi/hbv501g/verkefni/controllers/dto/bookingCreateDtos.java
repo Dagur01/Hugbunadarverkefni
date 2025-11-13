@@ -7,7 +7,7 @@ public class bookingCreateDtos {
     private String discountCode;
     private Long screeningId;
 
-    // Getters & setters
+
     public Long getMovieId() {
         return movieId;
     }
