@@ -57,7 +57,7 @@ public class DiscountServiceImpl implements DiscountService {
 
     @Override
 
-    public Discount createDiscount(String code, int percentage) {
+    public Discount createDiscount(String code, Integer percentage) {
 
         if (code == null || code.isBlank()) {
 

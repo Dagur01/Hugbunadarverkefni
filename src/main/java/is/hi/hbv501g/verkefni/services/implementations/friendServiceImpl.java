@@ -98,6 +98,12 @@ public class friendServiceImpl implements friendService {
                 .collect(Collectors.toList());
     }
 
+    private String toBase64Truncated(byte[] bytes, int maxLen) {
+        if (bytes == null) return null;
+        String b64 = java.util.Base64.getEncoder().encodeToString(bytes);
+        return b64.length() <= maxLen ? b64 : b64.substring(0, maxLen) + "...";
+    }
+
     @Override
     public ProfileDto getProfile(String email, String viewerEmail) {
         user target = userRepository.findByEmail(email)
@@ -128,9 +134,7 @@ public class friendServiceImpl implements friendService {
                 .email(target.getEmail()) // aðeins eigandi sér email sitt
                 .isFriend(isFriend)
                 .friends(friends)
-                .profilePictureBase64(target.getProfilePicture() != null
-                        ? java.util.Base64.getEncoder().encodeToString(target.getProfilePicture())
-                        : null)
+                .profilePictureBase64(toBase64Truncated(target.getProfilePicture(), 100))
                 .build();
     }
 
