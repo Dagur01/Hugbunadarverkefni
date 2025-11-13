@@ -70,7 +70,7 @@ PATCH /auth/profile/picture - update user profile picture
 
 ### Use case 9: Filter movies by genre
 
-GET "/movies/filter" - filter movies by: <br>{String movieTitle, String genre, Integer ageRating, Long duration}
+GET "/movies/genre/{genre}" - filter movies by genre
 
 ### Use case 3: Invite friends to a movie
 
@@ -85,6 +85,8 @@ DELETE /bookings/{bookingId}
 DELETE /profile/delete
 
 ---
+
+## Sprint 4
 
 ### Use case 4: Apply discount code
 
@@ -127,6 +129,8 @@ GET http://localhost:8080/favorites
 ### Use case 18: View a friends profile
 
 GET /users/{username}/profile
+Sjá vini
+GET freunds/list
 
 ---
 
