@@ -91,9 +91,9 @@ public class friendController {
         }
     }
 
-    @GetMapping(path = "/users/{username}/profile", produces = "application/json")
+    @GetMapping(path = "/users/{email}/profile", produces = "application/json")
     public ResponseEntity<?> viewProfile(@RequestHeader(value = "Authorization", required = false) String authHeader,
-                                         @PathVariable String username) {
+                                         @PathVariable String email) {
         String viewer = null;
         if (authHeader != null) {
             String token = extractToken(authHeader);
@@ -102,7 +102,7 @@ public class friendController {
             }
         }
         try {
-            ProfileDto profile = friendService.getProfile(username, viewer);
+            ProfileDto profile = friendService.getProfile(email, viewer);
             return ResponseEntity.ok(profile);
         } catch (Exception e) {
             return ResponseEntity.status(404).body(Map.of("error", e.getClass().getSimpleName(), "message", e.getMessage()));
