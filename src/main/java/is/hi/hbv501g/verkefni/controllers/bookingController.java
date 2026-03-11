@@ -169,4 +169,29 @@ public class bookingController {
 
         return ResponseEntity.ok(bookedSeatIds);
     }
+
+    @GetMapping
+    public ResponseEntity<?> getMyBookings(
+            @RequestHeader("Authorization") String authHeader
+    ) {
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            return ResponseEntity.status(401).body("Missing or invalid Authorization header");
+        }
+
+        String token = authHeader.substring(7);
+        if (!jwtService.validateToken(token)) {
+            return ResponseEntity.status(401).body("Invalid token");
+        }
+
+        String email = jwtService.extractEmail(token);
+        var user = userRepository.findByEmail(email).orElse(null);
+        if (user == null) {
+            return ResponseEntity.status(404).body("User not found");
+        }
+
+        var bookings = bookingRepository.findAllByUser(user);
+        return ResponseEntity.ok(bookings);
+    }
+
+    
 }
