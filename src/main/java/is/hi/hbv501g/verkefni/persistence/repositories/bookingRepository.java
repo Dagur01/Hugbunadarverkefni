@@ -7,6 +7,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface bookingRepository extends JpaRepository<booking, Long> {
-    boolean existsBySeat(seat seat);
+    boolean existsBySeatAndScreening(seat seat, screening screening);
     List<booking> findAllByUser(user user);
 }
