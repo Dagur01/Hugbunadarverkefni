@@ -2,6 +2,7 @@ package is.hi.hbv501g.verkefni.controllers;
 
 import is.hi.hbv501g.verkefni.controllers.dto.bookingCreateDtos;
 import is.hi.hbv501g.verkefni.persistence.entities.booking;
+import is.hi.hbv501g.verkefni.persistence.entities.screening;
 import is.hi.hbv501g.verkefni.services.DiscountService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -139,5 +140,33 @@ public class bookingController {
         bookingRepository.delete(booking);
 
         return ResponseEntity.ok("Booking cancelled successfully by " + user.getEmail());
+    }
+
+    @GetMapping("/screening/{screeningId}/booked-seats")
+    public ResponseEntity<?> getBookedSeatsForScreening(
+            @RequestHeader("Authorization") String authHeader,
+            @PathVariable Long screeningId
+    ) {
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            return ResponseEntity.status(401).body("Missing or invalid Authorization header");
+        }
+
+        String token = authHeader.substring(7);
+        if (!jwtService.validateToken(token)) {
+            return ResponseEntity.status(401).body("Invalid token");
+        }
+
+        screening screening = screeningRepository.findById(screeningId).orElse(null);
+        if (screening == null) {
+            return ResponseEntity.status(404).body("Screening not found");
+        }
+
+        var bookings = bookingRepository.findAllByScreening(screening);
+
+        var bookedSeatIds = bookings.stream()
+                .map(b -> b.getSeat().getSeatId())
+                .toList();
+
+        return ResponseEntity.ok(bookedSeatIds);
     }
 }
