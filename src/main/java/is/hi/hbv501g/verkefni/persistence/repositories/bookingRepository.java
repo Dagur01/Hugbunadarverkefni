@@ -10,4 +10,5 @@ import java.util.List;
 public interface bookingRepository extends JpaRepository<booking, Long> {
     boolean existsBySeatAndScreening(seat seat, screening screening);
     List<booking> findAllByUser(user user);
+    List<booking> findAllByScreening(screening screening);
 }
