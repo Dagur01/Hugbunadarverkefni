@@ -61,7 +61,7 @@ public class bookingController {
         var screening = screeningRepository.findById(dto.getScreeningId()).orElse(null);
         if (screening == null) return ResponseEntity.status(404).body("Screening not found");
 
-        boolean seatTaken = bookingRepository.existsBySeat(seat);
+        boolean seatTaken = bookingRepository.existsBySeatAndScreening(seat, screening);
         if (seatTaken) return ResponseEntity.status(409).body("Seat already booked");
 
         Integer discountPercent = null;
