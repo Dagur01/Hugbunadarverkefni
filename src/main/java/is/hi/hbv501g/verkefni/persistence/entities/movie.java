@@ -13,7 +13,6 @@ import org.springframework.boot.context.properties.bind.DefaultValue;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@JsonIgnoreProperties({"moviePicture"})
 public class movie {
 
     @Id

@@ -20,7 +20,7 @@ import static org.hibernate.cfg.JdbcSettings.USER;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@JsonIgnoreProperties({"passwordHash", "profile_picture", "profilePictureContentType"})
+@JsonIgnoreProperties({"passwordHash"})
 public class user {
 
     @Id
