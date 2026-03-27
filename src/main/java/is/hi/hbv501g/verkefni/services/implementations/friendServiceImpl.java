@@ -172,5 +172,14 @@ public class friendServiceImpl implements friendService {
         return movieInvitationRepository.save(inv);
     }
 
+    @Override
+    public List<friendRequest> getPendingRequests(String email) {
+        user u = userRepository.findByEmail(email)
+                .orElseThrow(() -> new NoSuchElementException("User not found"));
+
+        return friendRequestRepository.findByToUserAndStatus(u, "PENDING");
+    }
+
+
 
 }
