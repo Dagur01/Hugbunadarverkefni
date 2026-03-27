@@ -165,6 +165,27 @@ public class friendController {
             return ResponseEntity.status(400).body(Map.of("error", e.getClass().getSimpleName(), "message", e.getMessage()));
         }
     }
+    @GetMapping(path = "/friends/requests", produces = "application/json")
+    public ResponseEntity<?> getPendingRequests(@RequestHeader("Authorization") String authHeader) {
+        String token = extractToken(authHeader);
+        if (token == null || !jwtService.validateToken(token)) {
+            return ResponseEntity.status(401).body("Invalid or missing token");
+        }
+
+        String email = jwtService.extractEmail(token);
+        if (email == null || email.isBlank()) {
+            return ResponseEntity.status(401).body("Token does not contain an email");
+        }
+
+        try {
+            var requests = friendService.getPendingRequests(email);
+            return ResponseEntity.ok(requests);
+        } catch (Exception e) {
+            return ResponseEntity.status(400).body(
+                    Map.of("error", e.getClass().getSimpleName(), "message", e.getMessage())
+            );
+        }
+    }
 
 
 
