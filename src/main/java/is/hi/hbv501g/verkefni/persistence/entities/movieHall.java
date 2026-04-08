@@ -31,4 +31,9 @@ public class movieHall {
     @JsonManagedReference
     private List<seat> seats;
 
+    @Column
+    private Double latitude;
+    @Column
+    private Double longitude;
+
 }
