@@ -91,9 +91,14 @@ public class friendServiceImpl implements friendService {
     public List<String> listFriendsUsernames(String email) {
         user u = userRepository.findByEmail(email)
                 .orElseThrow(() -> new NoSuchElementException("User not found"));
-        List<friendRequest> accepted = friendRequestRepository.findByFromUserOrToUserAndStatus(u, u, "ACCEPTED");
-        return accepted.stream()
-                .map(fr -> fr.getFromUser().getUserId() == (u.getUserId()) ? fr.getToUser().getEmail() : fr.getFromUser().getEmail())
+
+        List<friendRequest> sentAccepted = friendRequestRepository.findByFromUserAndStatus(u, "ACCEPTED");
+        List<friendRequest> receivedAccepted = friendRequestRepository.findByToUserAndStatus(u, "ACCEPTED");
+
+        return java.util.stream.Stream.concat(
+                        sentAccepted.stream().map(fr -> fr.getToUser().getEmail()),
+                        receivedAccepted.stream().map(fr -> fr.getFromUser().getEmail())
+                )
                 .distinct()
                 .collect(Collectors.toList());
     }
